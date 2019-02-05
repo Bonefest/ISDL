@@ -18,7 +18,7 @@ void Camera::update(float delta) {
 		Rect objectSize;
 
 		if(object != nullptr) { 
-			objectPosition = object->getPosition();
+			objectPosition = object->getAbsolutePosition();
 			objectSize = object->getSize();
 		}
 		else { 

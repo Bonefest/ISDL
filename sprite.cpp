@@ -3,30 +3,38 @@
 #include "sprite.h"
 #include "game.h"
 
-Sprite::Sprite():texture(nullptr),position{0,0},angle(0),pinned(false),currentAnimation(nullptr),animationStopped(false) { }
+Sprite::Sprite():texture(nullptr),absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),currentAnimation(nullptr),animationStopped(false) { }
 
-Sprite::Sprite(SDL_Texture* tex,Rect pos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
-texture(tex),position(pos),size(sz),anchor{0.5*sz.x,0.5*sz.y},angle(angl),pinned(pnd),flip(type),
+Sprite::Sprite(SDL_Texture* tex,Rect apos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
+texture(tex),absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),flip(type),
 currentAnimation(nullptr),animationStopped(false) { }
 
-void Sprite::setPosition(double x,double y) { position.x = x;position.y = y; }
+void Sprite::setPosition(double x,double y) { absolutePosition.x = x;absolutePosition.y = y; }
 
-void Sprite::setPosition(Rect pos) { position = pos; }
+void Sprite::setPosition(Rect pos) {absolutePosition = pos; }
 
 void Sprite::setSize(double w,double h) { size.x = w;size.y = h; }
 void Sprite::setSize(Rect _size) { size = _size; }
 
-SDL_Rect Sprite::getDestination() const {
-	return (SDL_Rect){(int)round(position.x),(int)round(position.y),(int)round(size.x),(int)round(size.y)};
+SDL_Rect Sprite::getAbsoluteDestination() const {
+	return (SDL_Rect){(int)round(absolutePosition.x),(int)round(absolutePosition.y),(int)round(size.x),(int)round(size.y)};
+}
+
+SDL_Rect Sprite::getRelativeDestination() const {
+	return (SDL_Rect){(int)round(relativePosition.x),(int)round(relativePosition.y),(int)round(size.x),(int)round(size.y)};
 }
 
 void Sprite::draw(SDL_Renderer* renderer,Rect cameraPosition,double cameraAngle) {
+	if(pinned) { cameraPosition.x = 0; cameraPosition.y = 0; } //Если спрайт прикреплен,меняем позицию камеры в 0 (по сути удаляем позицинирование относительно камеры)
 
-	SDL_Rect destination = {(int)round(position.x-cameraPosition.x),(int)round(position.y-cameraPosition.y),(int)round(size.x),(int)round(size.y)};
+	relativePosition.x = absolutePosition.x-cameraPosition.x;	//Устанавливаем относительную
+	relativePosition.y = absolutePosition.y-cameraPosition.y;	//позицию.
+
+	SDL_Rect destination = {(int)round(relativePosition.x),(int)round(relativePosition.y),(int)round(size.x),(int)round(size.y)};
 	SDL_Rect source;
 	
 	if(currentAnimation == nullptr) //Или || count of animations <= 0.Если анимация не задана или их нет
-		source = {0,0,(int)round(size.x),(int)round(size.y)};
+		source = {0,0,(int)round(size.x),(int)round(size.y)};	//Берем изображение из верхнего левого угла
 	else
 		source = currentAnimation->getFrameSource();
 
@@ -77,7 +85,7 @@ void Sprite::removeAnimation(std::string key) {
 
 bool Sprite::isClicked() const {
 	SDL_Point clickedPosition = Game::getInstance()->getLastMouseClickPosition();
-	SDL_Rect destination = getDestination();
+	SDL_Rect destination = getRelativeDestination();
 
 	return SDL_PointInRect(&clickedPosition,&destination);
 

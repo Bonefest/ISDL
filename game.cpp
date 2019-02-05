@@ -153,5 +153,5 @@ long long Game::getPressedTime(SDL_Keycode key) {
 		return SDL_GetTicks() - pressedKeys[key];
 	}
 
-	return -1ll;
+	return -1ll;	//Лучше пусть это будет константа аля NONE
 }

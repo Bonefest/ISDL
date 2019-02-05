@@ -1,5 +1,5 @@
-#ifndef TEXTURE_MANAGER_H_
-#define TEXTURE_MANAGER_H_
+#ifndef MEDIA_MANAGER_H_
+#define MEDIA_MANAGER_H_
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -16,7 +16,7 @@ struct Image {
 	SDL_Texture* texture;
 };
 
-class MedianManager {
+class MediaManager {
 private:
 	//Словарь загруженных текстур,где ключ - путь к текстуре
 	std::map<std::string,SDL_Texture*> loadedTextures;	
@@ -25,10 +25,10 @@ private:
 	std::map<std::string,Image> loadedImages;
 
 	MediaManager() {}
-	MediaManager(const TextureManager& )=delete;
-	TextureManager& operator=(const TextureManager& )=delete;
+	MediaManager(const MediaManager& )=delete;
+	MediaManager& operator=(const MediaManager& )=delete;
 public:
-	static TextureManager* getInstance();
+	static MediaManager* getInstance();
 
 	//Загружает текстуру и добавляет её в словарь загруженных текстур,если
 	//текстура уже загружена,просто возвращает указатель

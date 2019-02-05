@@ -16,13 +16,13 @@ SDL_Texture* loadTextureFromFile(std::string path) {
 
 }
 
-MediaManager* TextureManager::getInstance() {
+MediaManager* MediaManager::getInstance() {
 	static TextureManager* textureManager = new TextureManager();
 
 	return textureManager;
 }
 
-SDL_Texture* TextureManager::loadTexture(std::string path) {
+SDL_Texture* MediaManager::loadTexture(std::string path) {
 	if(loadedTextures.find(path) == loadedTextures.end()) {
 		SDL_Texture* texture = loadTextureFromFile(path);
 		if(texture == NULL) return NULL;
@@ -35,7 +35,7 @@ SDL_Texture* TextureManager::loadTexture(std::string path) {
 	return loadedTextures[path];
 }
 
-void TextureManager::close() {
+void MediaManager::close() {
 	for(auto textureIter = loadedTextures.begin();textureIter!=loadedTextures.end();textureIter++) {
 		SDL_DestroyTexture(textureIter->second);
 	}

@@ -13,13 +13,14 @@
 class Sprite {
 private:
 	SDL_Texture* texture;
-	Rect position;
+	Rect absolutePosition;	//Абсолютная позиция в мире
+	Rect relativePosition;	//Позиция на экране (Warning: позиция обновляется при отрисовке --> при наличие двух активных камер,позиция будет оставаться за последней)
 	Rect size;
 	SDL_Point anchor;	//Точка вращения
 
 	float angle;		//Угол поворота
 
-	bool pinned;		//Состояние прикреплен ли спрайт к экрану (перемещается ли он относительно игровой камеры)
+	bool pinned;		//Состояние прикреплен ли спрайт к экрану (перемещается ли он относительно игровой камеры) (??? должна ли быть возможность быть прикрепленным относительно одного и неприкрепленным относительно другого?)
 
 	SDL_RendererFlip flip;	//Хранит отражение,которое используется при отрисовке
 
@@ -28,13 +29,14 @@ private:
 
 	bool animationStopped;	//Остановлено обновление анимации
 
-	SDL_Rect getDestination() const;
+	SDL_Rect getAbsoluteDestination() const;	//Возвращает абсолютную позицию,переведенную из Rect в SDL_Rect (с округлением к int)
+	SDL_Rect getRelativeDestination() const;	//Возвращает позицию на экране
 public:
 	Sprite();
-	Sprite(SDL_Texture* texture,Rect position,Rect size,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false);
+	Sprite(SDL_Texture* texture,Rect absolutePosition,Rect size,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false);
 	virtual ~Sprite() {}
 
-	Rect getPosition() const { return position; }
+	Rect getAbsolutePosition() const { return absolutePosition; }
 
 	Rect getSize() const { return size;}
 

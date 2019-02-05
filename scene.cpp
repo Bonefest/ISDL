@@ -57,7 +57,7 @@ TestScene::TestScene() {
 
 
 	camera = new Camera();
-	animatedSprite = new Sprite(Game::getTextureManager()->loadTexture("test.png"),(Rect){scrSize.x/2,0},(Rect){64,64},0);
+	animatedSprite = new Sprite(Game::getTextureManager()->loadTexture("test.png"),(Rect){int(scrSize.x)/2,0},(Rect){64,64},0);
 	addSprite(animatedSprite);
 	
 	animations = new Animation[4];
@@ -122,35 +122,41 @@ void TestScene::controller(SDL_Event* event) {
 			direction = 0;
 
 		}
+	} else if(event->type == SDL_MOUSEBUTTONDOWN) {
+		if(animatedSprite->isClicked()) {
+			Rect s = animatedSprite->getSize();
+			animatedSprite->setSize(s.x*2,s.y*2);
+			Game::getInstance()->log("Clicked");
+		}
 	}
 
+
+
 	if(Game::getInstance()->isPressed(SDLK_a)) {
-		Rect rect = animatedSprite->getPosition();
+		Rect rect = animatedSprite->getAbsolutePosition();
 		rect.x -= 1;
 		animatedSprite->setPosition(rect);
 
 	}
 	if(Game::getInstance()->isPressed(SDLK_d)) {
-		Rect rect = animatedSprite->getPosition();
+		Rect rect = animatedSprite->getAbsolutePosition();
 		rect.x += 1;
 		animatedSprite->setPosition(rect);
 	}
 	if(Game::getInstance()->isPressed(SDLK_s)) {
-		Rect rect = animatedSprite->getPosition();
+		Rect rect = animatedSprite->getAbsolutePosition();
 		rect.y += 1;
 		animatedSprite->setPosition(rect);
 	}
 	if(Game::getInstance()->isPressed(SDLK_w)) {
-		Rect rect = animatedSprite->getPosition();
+		Rect rect = animatedSprite->getAbsolutePosition();
 		rect.y -= 1;
 		animatedSprite->setPosition(rect);
 
 	}
 
-	if(animatedSprite->isClicked()) {
-		animatedSprite->setSize(150,150);
-		Game::getInstance()->log("Clicked");
-	}
+
+
 }
 
 void TestScene::update(double delta) {
