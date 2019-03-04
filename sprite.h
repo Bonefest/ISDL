@@ -69,7 +69,7 @@ public:
 	//int addChild(Sprite* child);	//int - это id нового объекта
 	//void addChild(Sprite* child,std::string name);
 	void addChild(Sprite* child);
-	void setParent(Sprte* parent);
+	void setParent(Sprite* parent);
 	void removeParent();
 
 	//Рисует изображение относительно камеры.Рисует кадр анимации,если она есть,иначе рисует просто текстуру

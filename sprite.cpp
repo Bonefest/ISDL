@@ -14,7 +14,7 @@ texture(nullptr),image(img),absolutePosition(apos),relativePosition{0,0},size(sz
 currentAnimation(nullptr),animationStopped(false) { }
 
 void Sprite::addPosition(double x,double y) {
-	for(auto childIter = childIter.iter();childIter != childIter.end();childIter++)
+	for(auto childIter = children.begin();childIter != children.end();childIter++)
 		(*childIter)->addPosition(x,y);
 
 	absolutePosition.x += x;
@@ -23,7 +23,7 @@ void Sprite::addPosition(double x,double y) {
 
 void Sprite::setPosition(double x,double y) {
 	
-	for(auto childIter = children.iter();childIter!=childIter.end();childIter++)
+	for(auto childIter = children.begin();childIter!=children.end();childIter++)
 		(*childIter)->addPosition(x-absolutePosition.x,y-absolutePosition.y);
 
 	absolutePosition.x = x;
@@ -95,7 +95,7 @@ void Sprite::draw(SDL_Renderer* renderer,Rect cameraPosition,double cameraAngle)
 	
 	//Рисуем всех детей
 	for(auto childIter = children.begin();childIter != children.end();childIter++)
-		(*childIter)->draw();
+		(*childIter)->draw(renderer,cameraPosition,cameraAngle);
 }
 
 void Sprite::update(double delta) {
@@ -104,7 +104,7 @@ void Sprite::update(double delta) {
 
 	//Обновляем всех детей
 	for(auto childIter = children.begin();childIter != children.end();childIter++)
-		(*childIter)->update();
+		(*childIter)->update(delta);
 }
 
 
