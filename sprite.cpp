@@ -3,18 +3,52 @@
 #include "sprite.h"
 #include "game.h"
 
-Sprite::Sprite():texture(nullptr),absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),currentAnimation(nullptr),animationStopped(false) { }
+Sprite::Sprite():texture(nullptr),image{},absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
 
 Sprite::Sprite(SDL_Texture* tex,Rect apos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
-texture(tex),absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),flip(type),
+texture(tex),image{},absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),flip(type),
 currentAnimation(nullptr),animationStopped(false) { }
 
-void Sprite::setPosition(double x,double y) { absolutePosition.x = x;absolutePosition.y = y; }
+Sprite::Sprite(Image img,Rect apos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
+texture(nullptr),image(img),absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),flip(type),
+currentAnimation(nullptr),animationStopped(false) { }
+
+void Sprite::addPosition(double x,double y) {
+	for(auto childIter = childIter.iter();childIter != childIter.end();childIter++)
+		(*childIter)->addPosition(x,y);
+
+	absolutePosition.x += x;
+	absolutePosition.y += y;
+}
+
+void Sprite::setPosition(double x,double y) {
+	
+	for(auto childIter = children.iter();childIter!=childIter.end();childIter++)
+		(*childIter)->addPosition(x-absolutePosition.x,y-absolutePosition.y);
+
+	absolutePosition.x = x;
+	absolutePosition.y = y; 
+
+}
 
 void Sprite::setPosition(Rect pos) {absolutePosition = pos; }
 
 void Sprite::setSize(double w,double h) { size.x = w;size.y = h; }
 void Sprite::setSize(Rect _size) { size = _size; }
+
+void Sprite::addChild(Sprite* child) {
+	children.push_back(child);
+}
+
+void Sprite::setParent(Sprite* prnt) {
+	if(prnt == this) return;
+
+	parent = prnt;
+}
+
+void Sprite::removeParent() {
+	setParent(nullptr);
+}
 
 SDL_Rect Sprite::getAbsoluteDestination() const {
 	return (SDL_Rect){(int)round(absolutePosition.x),(int)round(absolutePosition.y),(int)round(size.x),(int)round(size.y)};
@@ -22,6 +56,14 @@ SDL_Rect Sprite::getAbsoluteDestination() const {
 
 SDL_Rect Sprite::getRelativeDestination() const {
 	return (SDL_Rect){(int)round(relativePosition.x),(int)round(relativePosition.y),(int)round(size.x),(int)round(size.y)};
+}
+
+void Sprite::setTexture(SDL_Texture* _texture) {
+	texture = _texture;
+}
+
+void Sprite::setImage(Image _image) {
+	image = _image;
 }
 
 void Sprite::draw(SDL_Renderer* renderer,Rect cameraPosition,double cameraAngle) {
@@ -32,23 +74,41 @@ void Sprite::draw(SDL_Renderer* renderer,Rect cameraPosition,double cameraAngle)
 
 	SDL_Rect destination = {(int)round(relativePosition.x),(int)round(relativePosition.y),(int)round(size.x),(int)round(size.y)};
 	SDL_Rect source;
+
+	SDL_Texture* sourceTexture = texture;
 	
-	if(currentAnimation == nullptr) //Или || count of animations <= 0.Если анимация не задана или их нет
-		source = {0,0,(int)round(size.x),(int)round(size.y)};	//Берем изображение из верхнего левого угла
+	if(currentAnimation == nullptr) {//Или || count of animations <= 0.Если анимация не задана или их нет
+		//Если изображение задано - используем его
+		if(image.texture != nullptr) {
+			sourceTexture = image.texture;
+			source = image.source;
+		}
+		//Иначе используем стандартную текстуру
+		else {
+			source = {0,0,(int)round(size.x),(int)round(size.y)};	//Берем изображение из верхнего левого угла
+		}
+	}
 	else
 		source = currentAnimation->getFrameSource();
 
-	SDL_RenderCopyEx(renderer,texture,&source,&destination,angle+(int)round(cameraAngle),&anchor,flip);
+	SDL_RenderCopyEx(renderer,sourceTexture,&source,&destination,angle+(int)round(cameraAngle),&anchor,flip);
 	
+	//Рисуем всех детей
+	for(auto childIter = children.begin();childIter != children.end();childIter++)
+		(*childIter)->draw();
 }
 
 void Sprite::update(double delta) {
 	if(currentAnimation != nullptr && !animationStopped)
 		currentAnimation->update(delta);
+
+	//Обновляем всех детей
+	for(auto childIter = children.begin();childIter != children.end();childIter++)
+		(*childIter)->update();
 }
 
 
-void Sprite::addAnimation(std::string key,Animation* animation) {
+void Sprite::addAnimation(std::string key,Animation animation) {
 	animations.emplace(key,animation);
 }
 
@@ -59,7 +119,7 @@ void Sprite::startAnimation(std::string key) {
 		if(currentAnimation != nullptr)
 			currentAnimation->reset();	//Обнуляем предыдущую анимацию
 
-		currentAnimation = animations[key];
+		currentAnimation = &animations[key];
 	}
 }
 
@@ -72,7 +132,7 @@ void Sprite::resetAnimation() {
 		currentAnimation->reset();
 }
 
-Animation* Sprite::getAnimation(std::string key) {
+Animation Sprite::getAnimation(std::string key) {
 	if(animations.find(key) != animations.end())
 		return animations[key];
 
@@ -91,6 +151,62 @@ bool Sprite::isClicked() const {
 
 }
 
+bool Sprite::isHovered() const {
+	SDL_Point mousePosition;
+	SDL_GetMouseState(&mousePosition.x,&mousePosition.y);
+
+	SDL_Rect destination = getRelativeDestination();
+	return SDL_PointInRect(&mousePosition,&destination);
+}
+
+
+
 bool Sprite::isAnimate() const{
 	return (!animationStopped && (currentAnimation != nullptr));	//Анимация не остановлена и текущая анимация задана
+}
+
+bool Sprite::isPinned() const { return pinned; }
+
+void Sprite::setPinned(bool value) { pinned = value; }
+
+Label::Label(TTF_Font* _font):Sprite(),currentTexture(nullptr),font(_font),lastColor{255,255,255} {}
+
+Label::Label(TTF_Font* _font,const std::string& text, Rect position , SDL_Color textColor ):Label(_font) {
+
+	setText(text,position,textColor);
+}
+
+void Label::setText(const std::string& text,Rect position,SDL_Color textColor) {
+	if(font != nullptr ) {
+		setPosition(position);
+
+		if(textColor.r == lastColor.r && textColor.g == lastColor.g && textColor.b == lastColor.b && lastText == text) return;	//Если текст и цвет не изменились - ничего не делаем
+
+		lastColor = textColor;
+		lastText = text;
+
+		SDL_Surface* surface = TTF_RenderText_Solid(font,text.c_str(),textColor);
+
+		//Если текущая текстура существу - удаляем её (для новой)
+		if(currentTexture!= nullptr) {
+			SDL_DestroyTexture(currentTexture);
+			currentTexture = nullptr;
+		}
+
+		currentTexture = SDL_CreateTextureFromSurface(Game::getInstance()->getRenderer(),surface);
+
+		setTexture(currentTexture);
+		setSize(surface->w,surface->h);
+
+		SDL_FreeSurface(surface);
+	}
+}
+
+void Label::setText(const std::string& text) {
+	setText(text,getAbsolutePosition(),lastColor);
+
+}
+
+void Label::setColor(SDL_Color textColor) {
+	setText(lastText,getAbsolutePosition(),textColor);
 }

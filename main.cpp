@@ -18,6 +18,5 @@ int main(int argc, char const *argv[]) {
 
 	Game::getInstance()->closeGame();
 
-	delete scene;
 	return 0;
 }

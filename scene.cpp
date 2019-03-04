@@ -10,11 +10,52 @@
 Scene::~Scene() {}
 
 
+void Scene::controller(SDL_Event* event) {
+	if(event->type == SDL_MOUSEBUTTONDOWN) {
+		for(auto spriteIter = sceneSprites.begin();spriteIter != sceneSprites.end();spriteIter++) {
+
+			if((*spriteIter)->isClicked()) {
+				(*spriteIter)->onClick(event->button);
+				clickedSprites.push_back(*spriteIter);
+			}
+		}
+	} else if(event->type == SDL_MOUSEBUTTONUP) {
+		for(auto clickedSpriteIter = clickedSprites.begin();clickedSpriteIter != clickedSprites.end();) {
+			
+			(*clickedSpriteIter)->onRelease();
+			clickedSpriteIter = clickedSprites.erase(clickedSpriteIter);
+
+		}
+
+	} else if(event->type == SDL_MOUSEMOTION) {
+		for(auto spriteIter = sceneSprites.begin();spriteIter != sceneSprites.end();spriteIter++) {
+
+			//Удаляем из списка все указатели на спрайты,на которые больше не наведена мышка
+			for(auto hoveredSpriteIter = hoveredSprites.begin();hoveredSpriteIter != hoveredSprites.end(); ) {
+				if( !(*hoveredSpriteIter)->isHovered()) {
+
+					(*hoveredSpriteIter)->onUnhover();
+					hoveredSpriteIter = hoveredSprites.erase(hoveredSpriteIter);
+				} else hoveredSpriteIter++;
+			}
+
+
+			//Если на спрайт наведа мышка и это первичное событие
+			if((*spriteIter)->isHovered() && !(*spriteIter)->isAlreadyHovered()) {
+				(*spriteIter)->onHover();
+				hoveredSprites.push_back(*spriteIter);
+			}
+
+			
+		}
+	}
+}
+
 void Scene::draw() {
 	//Для каждой камеры рисуем все объекты
 	for(auto cameraIter=sceneCameras.begin();cameraIter!=sceneCameras.end();cameraIter++) {
 		if(cameraIter->second->isActive()) {
-			for(unsigned int counter=0;counter!=sceneSprites.size();counter++) {
+			for(size_t counter=0;counter!=sceneSprites.size();counter++) {
 				sceneSprites[counter]->draw(Game::getInstance()->getRenderer(),cameraIter->second->getPosition(),cameraIter->second->getAngle());
 					
 			}
@@ -55,22 +96,31 @@ TestScene::TestScene() {
 	timer = 0.0f;
 	SDL_Point scrSize = Game::getInstance()->getScreenSize();
 
+	label = Label(Game::getMediaManager()->loadFont("slkscr.ttf",8));
+	label.setText("Test",Rect{100,100},SDL_Color{255,255,255});
+/*	label.setPinned(true);
+*/
+
+	Game::getMediaManager()->scanJsonFile("spritesheet.json");
 
 	camera = new Camera();
-	animatedSprite = new Sprite(Game::getTextureManager()->loadTexture("test.png"),(Rect){int(scrSize.x)/2,0},(Rect){64,64},0);
+	animatedSprite = new Sprite(Game::getMediaManager()->loadTexture("test.png"),(Rect){int(scrSize.x)/2,0},(Rect){64,64},0);
 	addSprite(animatedSprite);
+	addSprite(&label);
+
+
 	
-	animations = new Animation[4];
-
-	animations[0] = Animation(Game::getTextureManager()->loadTexture("test.png"),64,64,0,0,20);
-	animations[1] = Animation(Game::getTextureManager()->loadTexture("test.png"),64,64,0,64,20);
-	animations[2] = Animation(Game::getTextureManager()->loadTexture("test.png"),64,64,0,128,20);
-	animations[3] = Animation(Game::getTextureManager()->loadTexture("test.png"),64,64,0,192,20);
-
-	animatedSprite->addAnimation("up",animations);
-	animatedSprite->addAnimation("left",animations+1);
-	animatedSprite->addAnimation("down",animations+2);
-	animatedSprite->addAnimation("right",animations+3);
+/*	animations = new Animation[4];
+*/
+/*	animations[0] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,0,20);
+	animations[1] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,64,20);
+	animations[2] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,128,20);
+	animations[3] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,192,20);
+*/
+	animatedSprite->addAnimation("up",Game::getMediaManager()->getAnimation("up"));
+	animatedSprite->addAnimation("left",Game::getMediaManager()->getAnimation("left"));
+	animatedSprite->addAnimation("down",Game::getMediaManager()->getAnimation("down"));
+	animatedSprite->addAnimation("right",Game::getMediaManager()->getAnimation("right"));
 
 	animatedSprite->startAnimation("up");
 	direction = 0;
@@ -91,6 +141,8 @@ TestScene::~TestScene() {
 }
 
 void TestScene::controller(SDL_Event* event) {
+	Scene::controller(event);
+
 	if(event->type == SDL_KEYUP) {
 		animatedSprite->stopAnimation();
 		animatedSprite->resetAnimation();
@@ -107,19 +159,23 @@ void TestScene::controller(SDL_Event* event) {
 		if(Game::getInstance()->isPressed(SDLK_a) && direction != 1) {
 			animatedSprite->startAnimation("left");
 			direction = 1;
-
+			label.setText("left",label.getAbsolutePosition(),SDL_Color{rand()%255,rand()%255,rand()%255});
+			animatedSprite->setImage(Game::getMediaManager()->getImage("left_staying"));
 		}
 		if(Game::getInstance()->isPressed(SDLK_d) && direction != 3) {
 			animatedSprite->startAnimation("right");
 			direction = 3;
+			label.setText("right",label.getAbsolutePosition(),SDL_Color{rand()%255,rand()%255,rand()%255});
 		}
 		if(Game::getInstance()->isPressed(SDLK_s) && direction != 2) {
 			animatedSprite->startAnimation("down");
 			direction = 2;
+			label.setText("down",label.getAbsolutePosition(),SDL_Color{rand()%255,rand()%255,rand()%255});
 		}
 		if(Game::getInstance()->isPressed(SDLK_w) && direction != 0) {
 			animatedSprite->startAnimation("up");
 			direction = 0;
+			label.setText("up",label.getAbsolutePosition(),SDL_Color{rand()%255,rand()%255,rand()%255});
 
 		}
 	} else if(event->type == SDL_MOUSEBUTTONDOWN) {
@@ -127,6 +183,10 @@ void TestScene::controller(SDL_Event* event) {
 			Rect s = animatedSprite->getSize();
 			animatedSprite->setSize(s.x*2,s.y*2);
 			Game::getInstance()->log("Clicked");
+		}
+		if(label.isClicked()) {
+			Rect s = label.getSize();
+			label.setSize(s.x*2,s.y*2);
 		}
 	}
 
@@ -167,5 +227,6 @@ void TestScene::update(double delta) {
 
 void TestScene::draw() {
 	Scene::draw();
+
 
 }

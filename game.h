@@ -1,12 +1,13 @@
 #ifndef GAME_H_
 #define GAME_H_
 #include <SDL2/SDL.h>
+
 #include <map>
 #include <utility>
 
 #include "scene.h"
 #include "logger.h"
-#include "texture_manager.h"
+#include "media_manager.h"
 
 class Game {
 private:
@@ -60,7 +61,7 @@ public:
 
 	void switchScene(Scene* scene) { currentScene = scene;}
 
-	static TextureManager* getTextureManager() { return TextureManager::getInstance();}
+	static MediaManager* getMediaManager() { return MediaManager::getInstance();}
 
 	//Возвращает состояние переданной клавиши (нажата или нет)
 	bool isPressed(SDL_Keycode key);

@@ -1,6 +1,8 @@
 #include <string>
 #include <sstream>
 #include "game.h"
+#include <SDL2/SDL_ttf.h>
+
 
 #include "vector.h"
 Game* Game::getInstance() {
@@ -42,7 +44,7 @@ void Game::initGame(int width,int height,std::string name, Uint32 flags,Uint32 w
 		return;
 	}
 
-	int imageFlags = IMG_INIT_JPG|IMG_INIT_PNG;
+	int imageFlags = IMG_INIT_PNG;
 	int initted = IMG_Init(imageFlags);
 	if( (initted&imageFlags) != imageFlags) {
 		logger->log(std::string("Image subsystem can't be loaded : ") + SDL_GetError());
@@ -50,10 +52,19 @@ void Game::initGame(int width,int height,std::string name, Uint32 flags,Uint32 w
 		return;
 	}
 
+	if(TTF_Init() == -1) {
+		logger->log(std::string("TTF subsystem can't be loaded : ") + SDL_GetError());
+		initialized = false;
+		return;
+
+	}
+
 	initialized = true;
-	logger->log("'" + gameName + "' have successfully initialized.");
+	logger->log("'" + gameName + "' has successfully initialized.");
 }
 
+
+	#include <iostream>
 void Game::closeGame() {
 
 	logger->log("Destroying a render ...");
@@ -64,10 +75,16 @@ void Game::closeGame() {
 	SDL_DestroyWindow(window);
 	window = nullptr;
 
-	TextureManager::getInstance()->close();
+	MediaManager::getInstance()->close();
+	logger->log("MediaManager has successfully destroyed.");
+
+	TTF_Quit();
+	IMG_Quit();
+	SDL_Quit();
 
 	delete logger;
 	delete Game::getInstance();
+
 }
 
 void Game::controller() {

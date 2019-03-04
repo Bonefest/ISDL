@@ -12,6 +12,9 @@ private:
 	short begFrameX;	//Позиция начального кадра	
 	short begFrameY;
 
+	short endFrameX;	//Позиция конечного кадра
+	short endFrameY;
+
 	short curFrameX;	//Позиция текущего кадра		
 	short curFrameY;
 

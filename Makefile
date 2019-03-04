@@ -1,6 +1,6 @@
 CC=g++
 
-SDL_LIBS=-lSDL2 -lSDL2_image -std=c++11
+SDL_LIBS=-lSDL2 -lSDL2_image -lSDL2_ttf -std=c++11
 CFLAGS=-Wall
 FILES=main.cpp game.cpp vector.cpp animation.cpp camera.cpp logger.cpp sprite.cpp scene.cpp media_manager.cpp
 
