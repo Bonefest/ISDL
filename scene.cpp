@@ -92,14 +92,16 @@ void Scene::removeCamera(std::string name) {
 
 ////////////////////////////////////
 
+/*
+
 TestScene::TestScene() {
 	timer = 0.0f;
 	SDL_Point scrSize = Game::getInstance()->getScreenSize();
 
 	label = Label(Game::getMediaManager()->loadFont("slkscr.ttf",8));
 	label.setText("Test",Rect{100,100},SDL_Color{255,255,255});
-/*	label.setPinned(true);
-*/
+	label.setPinned(true);
+
 
 	Game::getMediaManager()->scanJsonFile("spritesheet.json");
 
@@ -110,13 +112,13 @@ TestScene::TestScene() {
 
 
 	
-/*	animations = new Animation[4];
-*/
-/*	animations[0] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,0,20);
+	animations = new Animation[4];
+
+	animations[0] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,0,20);
 	animations[1] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,64,20);
 	animations[2] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,128,20);
 	animations[3] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,192,20);
-*/
+
 	animatedSprite->addAnimation("up",Game::getMediaManager()->getAnimation("up"));
 	animatedSprite->addAnimation("left",Game::getMediaManager()->getAnimation("left"));
 	animatedSprite->addAnimation("down",Game::getMediaManager()->getAnimation("down"));
@@ -230,3 +232,5 @@ void TestScene::draw() {
 
 
 }
+
+*/

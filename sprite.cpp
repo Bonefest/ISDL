@@ -107,6 +107,9 @@ void Sprite::update(double delta) {
 		(*childIter)->update(delta);
 }
 
+void Sprite::controller(SDL_Event* event){
+	return;
+}
 
 void Sprite::addAnimation(std::string key,Animation animation) {
 	animations.emplace(key,animation);
@@ -168,6 +171,8 @@ bool Sprite::isAnimate() const{
 bool Sprite::isPinned() const { return pinned; }
 
 void Sprite::setPinned(bool value) { pinned = value; }
+
+Sprite *Sprite::getSprite() { return this; }
 
 Label::Label(TTF_Font* _font):Sprite(),currentTexture(nullptr),font(_font),lastColor{255,255,255} {}
 

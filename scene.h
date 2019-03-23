@@ -6,8 +6,10 @@
 #include <list>
 #include <map>
 #include <string>
+#include <SDL2/SDL_ttf.h>
 
 #include "camera.h"
+#include "sprite.h"
 
 class Scene {
 private:
@@ -43,8 +45,7 @@ public:
 
 
 
-#include "sprite.h"
-#include <SDL2/SDL_ttf.h>
+/*
 //НИЖЕ ТЕСТ,МОЖНО УДАЛЯТЬ
 class TestScene : public Scene {
 private:
@@ -64,5 +65,6 @@ public:
 	void update(double delta);
 	void draw();
 };
+*/
 
 #endif
