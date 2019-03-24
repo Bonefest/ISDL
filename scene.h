@@ -21,7 +21,7 @@ private:
 													//в виде Имя Камеры - Значение
 
 public:
-	virtual ~Scene()=0;	//НАДО РЕАЛИЗОВАТЬ УДАЛЕНИЕ
+	virtual ~Scene();	//НАДО РЕАЛИЗОВАТЬ УДАЛЕНИЕ
 
 	//Обрабатывает события
 	virtual void controller(SDL_Event* event);

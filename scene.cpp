@@ -7,7 +7,20 @@
 #include <utility>
 
 
-Scene::~Scene() {}
+Scene::~Scene() {
+	clickedSprites.clear();
+	hoveredSprites.clear();
+	for(unsigned int counter = sceneSprites.size()-1; counter >= 0; counter--){
+		Sprite *spr = sceneSprites[counter];
+		delete spr;
+	}
+	sceneSprites.clear();
+	for(auto cameraIter=sceneCameras.begin();cameraIter!=sceneCameras.end();cameraIter++){
+		Camera *cam = cameraIter->second;
+		delete cam;
+	}
+	sceneCameras.clear();
+}
 
 
 void Scene::controller(SDL_Event* event) {
@@ -49,6 +62,9 @@ void Scene::controller(SDL_Event* event) {
 			
 		}
 	}
+	for(unsigned int counter = 0; counter < sceneSprites.size(); counter++){
+		sceneSprites[counter]->controller(event);
+	}
 }
 
 void Scene::draw() {
@@ -85,8 +101,10 @@ void Scene::addCamera(std::string name,Camera* camera) {
 
 
 //Удаляет камеру из сцены
-void Scene::removeCamera(std::string name) {
+void Scene::removeCamera(std::string name){
+	Camera *cam = sceneCameras[name];
 	sceneCameras.erase(name);
+	delete cam;
 }
 
 

@@ -13,7 +13,7 @@ public:
 
 		cam = new Camera();
 
-		addSprite(block->getSprite());
+		addSprite(block);
 		addSprite(sblock);
 
 		addCamera("camera", cam);

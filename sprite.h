@@ -99,7 +99,6 @@ public:
 	bool isPinned() const;										//Прикреплен ли к экрану
 	void setPinned(bool value);
 
-	Sprite *getSprite();
 };
 
 

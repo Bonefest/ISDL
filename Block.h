@@ -21,11 +21,11 @@ public:
 				addPosition(0, -1*speed);
 			}
 		}
-		//std::cout << getAbsolutePosition().x << " " << getAbsolutePosition().y << std::endl;
+		
 	}
 
-	Block(SDL_Texture* texture,Rect absolutePosition,Rect size,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false){
-		Sprite(texture, absolutePosition, size, angle, type, pinned);
-		speed = 5;
+	Block(SDL_Texture* texture,Rect absolutePosition,Rect size,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false):Sprite(texture, absolutePosition, size, angle, type, pinned){
+		
+		speed = 10;
 	}
 };

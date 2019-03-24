@@ -172,8 +172,6 @@ bool Sprite::isPinned() const { return pinned; }
 
 void Sprite::setPinned(bool value) { pinned = value; }
 
-Sprite *Sprite::getSprite() { return this; }
-
 Label::Label(TTF_Font* _font):Sprite(),currentTexture(nullptr),font(_font),lastColor{255,255,255} {}
 
 Label::Label(TTF_Font* _font,const std::string& text, Rect position , SDL_Color textColor ):Label(_font) {
