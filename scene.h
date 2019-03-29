@@ -50,6 +50,7 @@ class TestScene : public Scene {
 private:
 	int direction;
 	Sprite* animatedSprite;
+	Sprite* subSpr;
 	Label label;
 	Animation animations[4];
 	float timer;
@@ -63,6 +64,14 @@ public:
 	void controller(SDL_Event* event);
 	void update(double delta);
 	void draw();
+};
+
+/////////////////////////////////////////////
+class CollisionManager {
+private:
+	std::vector<Sprite*> objects;
+public:
+
 };
 
 #endif

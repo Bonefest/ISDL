@@ -43,7 +43,7 @@ private:
 public:
 	Sprite();
 	Sprite(SDL_Texture* texture,Rect absolutePosition,Rect size,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false);
-	Sprite(Image image,Rect absolutePosition,Rect size,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false);
+	Sprite(Image image,Rect absolutePosition,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false);
 	virtual ~Sprite() {}
 
 	Rect getAbsolutePosition() const { return absolutePosition; }
@@ -109,7 +109,7 @@ private:
 
 	TTF_Font* font;
 	SDL_Color lastColor;
-	std::string lastText;		//Последнее сообщение.Если оно и цве
+	std::string currentText;		//Последнее сообщение.Если оно и цве
 
 public:
 	Label(TTF_Font* font=nullptr);
@@ -122,23 +122,42 @@ public:
 	virtual void onUnhover() { setText("unhovered"); }
 
 	void setColor(SDL_Color textColor);
+	SDL_Color getColor() const;
 
 	void setFont(TTF_Font* font);
+
+	std::string getCurrentText() { return currentText; }
 };
 
 class Button: public Sprite {
 private:
 	Label label;	//Текст,который содержит кнопка
+	Image image;		//Стандартное изображение
 	Image pressedImage;
 	Image hoveredImage;
 
 	//short borderSize;
 	//SDL_Color borderColor;
 
-
 public:
+
+	Button(Rect position,Rect size,Image image,SDL_Color textColor,std::string text="",TTF_Font* font=nullptr);
+
+	Button(Rect position,Rect size,Image image,const Label& label);
+
 	void setClickedImage(Image image);
 	void setHoveredImage(Image image);
+
+	void setFont(TTF_Font* font);
+	std::string getCurrentText();
+
+	void setColor(SDL_Color color);
+	SDL_Color getColor();
+
+};
+
+class Scrollbar : public Sprite {
+
 };
 
 #endif

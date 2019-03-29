@@ -10,7 +10,6 @@ Game* Game::getInstance() {
 	return game;
 }
 
-
 void Game::initGame(int width,int height,std::string name, Uint32 flags,Uint32 windowFlags,Uint32 rendererFlags,bool _fullscreen,const char* logFileName) {
 	logger = new Logger(logFileName);
 	currentScene = nullptr;
@@ -61,6 +60,7 @@ void Game::initGame(int width,int height,std::string name, Uint32 flags,Uint32 w
 
 	initialized = true;
 	logger->log("'" + gameName + "' has successfully initialized.");
+
 }
 
 

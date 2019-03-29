@@ -1,12 +1,23 @@
 #ifndef VECTOR_H_
 #define VECTOR_H_
 
+#include <SDL2/SDL.h>
+
 struct Rect {
 	double x;
 	double y;
 
 	double width;
 	double height;
+
+	//Rect(const SDL_Rect& rect):(SDL_Rect){(int)round(relativePosition.x),(int)round(relativePosition.y),(int)round(size.x),(int)round(size.y)};(round(rect.x)),y(round(rect.y)),width(round(rect.w)),height(round(rect.h)) { }
+	void setSDLRect(const SDL_Rect& rect) {
+		x = rect.x;
+		y = rect.y;
+		width = rect.w;
+		height = rect.h;
+	}
+	SDL_Rect toSDLRect() const { return (SDL_Rect){int(round(x)),int(round(y)),int(round(width)),int(round(height)) }; }
 };
 
 struct Polar {

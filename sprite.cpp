@@ -9,9 +9,11 @@ Sprite::Sprite(SDL_Texture* tex,Rect apos,Rect sz,double angl,SDL_RendererFlip t
 texture(tex),image{},absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),flip(type),
 currentAnimation(nullptr),animationStopped(false) { }
 
-Sprite::Sprite(Image img,Rect apos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
-texture(nullptr),image(img),absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),flip(type),
-currentAnimation(nullptr),animationStopped(false) { }
+Sprite::Sprite(Image img,Rect apos,double angl,SDL_RendererFlip type,bool pnd):
+texture(nullptr),image(img),absolutePosition(apos),relativePosition{0,0},anchor{int(0.5*image.source.w),int(0.5*image.source.h)},angle(angl),pinned(pnd),alreadyHovered(false),flip(type),
+currentAnimation(nullptr),animationStopped(false) { 
+	size.setSDLRect(image.source);
+}
 
 void Sprite::addPosition(double x,double y) {
 	for(auto childIter = children.begin();childIter != children.end();childIter++)
@@ -31,10 +33,18 @@ void Sprite::setPosition(double x,double y) {
 
 }
 
-void Sprite::setPosition(Rect pos) {absolutePosition = pos; }
+void Sprite::setPosition(Rect pos) { setPosition(pos.x,pos.y); }
 
-void Sprite::setSize(double w,double h) { size.x = w;size.y = h; }
-void Sprite::setSize(Rect _size) { size = _size; }
+void Sprite::setSize(double w,double h) { 
+	size.x = w;size.y = h; 
+	image.source.w = w;
+	image.source.h = h;
+}
+void Sprite::setSize(Rect _size) { 
+	size = _size; 
+	image.source.w = _size.x;
+	image.source.h = _size.y;
+}
 
 void Sprite::addChild(Sprite* child) {
 	children.push_back(child);
@@ -180,10 +190,10 @@ void Label::setText(const std::string& text,Rect position,SDL_Color textColor) {
 	if(font != nullptr ) {
 		setPosition(position);
 
-		if(textColor.r == lastColor.r && textColor.g == lastColor.g && textColor.b == lastColor.b && lastText == text) return;	//Если текст и цвет не изменились - ничего не делаем
+		if(textColor.r == lastColor.r && textColor.g == lastColor.g && textColor.b == lastColor.b && currentText == text) return;	//Если текст и цвет не изменились - ничего не делаем
 
 		lastColor = textColor;
-		lastText = text;
+		currentText = text;
 
 		SDL_Surface* surface = TTF_RenderText_Solid(font,text.c_str(),textColor);
 
@@ -208,5 +218,17 @@ void Label::setText(const std::string& text) {
 }
 
 void Label::setColor(SDL_Color textColor) {
-	setText(lastText,getAbsolutePosition(),textColor);
+	setText(currentText,getAbsolutePosition(),textColor);
+}
+
+//////////////////////////////////////////////
+
+Button::Button(Rect position,Rect size,Image image,SDL_Color color,std::string text,TTF_Font* font):Sprite(image,position) {
+	//Если шрифт не задан
+	if(font==nullptr) {
+		label = Label(Game::getInstance()->getMediaManager()->loadFont("default.ttf",12),text,position,color);
+	} else
+		label = Label(font,text,position,color);
+
+	setSize(size);
 }

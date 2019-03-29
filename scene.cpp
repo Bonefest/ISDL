@@ -96,7 +96,7 @@ TestScene::TestScene() {
 	timer = 0.0f;
 	SDL_Point scrSize = Game::getInstance()->getScreenSize();
 
-	label = Label(Game::getMediaManager()->loadFont("slkscr.ttf",8));
+	label = Label(Game::getMediaManager()->loadFont("default.ttf",8));
 	label.setText("Test",Rect{100,100},SDL_Color{255,255,255});
 /*	label.setPinned(true);
 */
@@ -105,6 +105,10 @@ TestScene::TestScene() {
 
 	camera = new Camera();
 	animatedSprite = new Sprite(Game::getMediaManager()->loadTexture("test.png"),(Rect){int(scrSize.x)/2,0},(Rect){64,64},0);
+	subSpr = new Sprite(Game::getMediaManager()->getImage("RunRight04.png"),(Rect){int(scrSize.x)/2,10});
+
+	animatedSprite->addChild(subSpr);
+
 	addSprite(animatedSprite);
 	addSprite(&label);
 
@@ -137,6 +141,7 @@ TestScene::TestScene() {
 TestScene::~TestScene() {
 	delete animatedSprite;
 	delete camera;
+	delete subSpr;
 	delete [] animations;
 }
 

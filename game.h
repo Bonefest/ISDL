@@ -42,6 +42,8 @@ private:
 	Game(const Game&)=delete;
 	Game& operator=(const Game&)=delete;
 
+	void loadDefaultSettings();					//Загружает стандартные настройки
+
 public:
 	void initGame(int width,int height,std::string name, Uint32 flags,Uint32 windowFlags,Uint32 rendererFlags = SDL_RENDERER_ACCELERATED,bool fullscreen=false,const char* logFileName = "default.log");
 
