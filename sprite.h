@@ -75,6 +75,7 @@ public:
 	//Рисует изображение относительно камеры.Рисует кадр анимации,если она есть,иначе рисует просто текстуру
 	virtual void draw(SDL_Renderer* renderer,Rect cameraPosition,double cameraAngle);
 	virtual void update(double delta);
+	virtual void controller(SDL_Event* event);
 
 	void addAnimation(std::string key,Animation animation);		//Добавляет новую анимацию в словарь
 	void startAnimation(std::string key);						//Запускает анимацию
@@ -97,6 +98,7 @@ public:
 
 	bool isPinned() const;										//Прикреплен ли к экрану
 	void setPinned(bool value);
+
 };
 
 

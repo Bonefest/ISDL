@@ -6,8 +6,10 @@
 #include <list>
 #include <map>
 #include <string>
+#include <SDL2/SDL_ttf.h>
 
 #include "camera.h"
+#include "sprite.h"
 
 class Scene {
 private:
@@ -19,7 +21,7 @@ private:
 													//в виде Имя Камеры - Значение
 
 public:
-	virtual ~Scene()=0;	//НАДО РЕАЛИЗОВАТЬ УДАЛЕНИЕ
+	virtual ~Scene();	//НАДО РЕАЛИЗОВАТЬ УДАЛЕНИЕ
 
 	//Обрабатывает события
 	virtual void controller(SDL_Event* event);
@@ -43,8 +45,7 @@ public:
 
 
 
-#include "sprite.h"
-#include <SDL2/SDL_ttf.h>
+/*
 //НИЖЕ ТЕСТ,МОЖНО УДАЛЯТЬ
 class TestScene : public Scene {
 private:
@@ -65,6 +66,7 @@ public:
 	void update(double delta);
 	void draw();
 };
+*/
 
 /////////////////////////////////////////////
 class CollisionManager {

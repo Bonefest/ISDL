@@ -7,7 +7,20 @@
 #include <utility>
 
 
-Scene::~Scene() {}
+Scene::~Scene() {
+	clickedSprites.clear();
+	hoveredSprites.clear();
+	for(unsigned int counter = sceneSprites.size()-1; counter >= 0; counter--){
+		Sprite *spr = sceneSprites[counter];
+		delete spr;
+	}
+	sceneSprites.clear();
+	for(auto cameraIter=sceneCameras.begin();cameraIter!=sceneCameras.end();cameraIter++){
+		Camera *cam = cameraIter->second;
+		delete cam;
+	}
+	sceneCameras.clear();
+}
 
 
 void Scene::controller(SDL_Event* event) {
@@ -49,6 +62,9 @@ void Scene::controller(SDL_Event* event) {
 			
 		}
 	}
+	for(unsigned int counter = 0; counter < sceneSprites.size(); counter++){
+		sceneSprites[counter]->controller(event);
+	}
 }
 
 void Scene::draw() {
@@ -85,12 +101,16 @@ void Scene::addCamera(std::string name,Camera* camera) {
 
 
 //Удаляет камеру из сцены
-void Scene::removeCamera(std::string name) {
+void Scene::removeCamera(std::string name){
+	Camera *cam = sceneCameras[name];
 	sceneCameras.erase(name);
+	delete cam;
 }
 
 
 ////////////////////////////////////
+
+/*
 
 TestScene::TestScene() {
 	timer = 0.0f;
@@ -98,8 +118,8 @@ TestScene::TestScene() {
 
 	label = Label(Game::getMediaManager()->loadFont("default.ttf",8));
 	label.setText("Test",Rect{100,100},SDL_Color{255,255,255});
-/*	label.setPinned(true);
-*/
+	label.setPinned(true);
+
 
 	Game::getMediaManager()->scanJsonFile("spritesheet.json");
 
@@ -114,13 +134,13 @@ TestScene::TestScene() {
 
 
 	
-/*	animations = new Animation[4];
-*/
-/*	animations[0] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,0,20);
+	animations = new Animation[4];
+
+	animations[0] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,0,20);
 	animations[1] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,64,20);
 	animations[2] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,128,20);
 	animations[3] = Animation(Game::getMediaManager()->loadTexture("test.png"),64,64,0,192,20);
-*/
+
 	animatedSprite->addAnimation("up",Game::getMediaManager()->getAnimation("up"));
 	animatedSprite->addAnimation("left",Game::getMediaManager()->getAnimation("left"));
 	animatedSprite->addAnimation("down",Game::getMediaManager()->getAnimation("down"));
@@ -235,3 +255,5 @@ void TestScene::draw() {
 
 
 }
+
+*/

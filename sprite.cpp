@@ -117,6 +117,9 @@ void Sprite::update(double delta) {
 		(*childIter)->update(delta);
 }
 
+void Sprite::controller(SDL_Event* event){
+	return;
+}
 
 void Sprite::addAnimation(std::string key,Animation animation) {
 	animations.emplace(key,animation);
