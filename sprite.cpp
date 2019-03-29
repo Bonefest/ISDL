@@ -3,14 +3,14 @@
 #include "sprite.h"
 #include "game.h"
 
-Sprite::Sprite():texture(nullptr),image{},absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
+Sprite::Sprite():texture(nullptr),image{},absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
 
 Sprite::Sprite(SDL_Texture* tex,Rect apos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
-texture(tex),image{},absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),flip(type),
+texture(tex),image{},absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),pressed(false),dragged(false),flip(type),
 currentAnimation(nullptr),animationStopped(false) { }
 
 Sprite::Sprite(Image img,Rect apos,double angl,SDL_RendererFlip type,bool pnd):
-texture(nullptr),image(img),absolutePosition(apos),relativePosition{0,0},anchor{int(0.5*image.source.w),int(0.5*image.source.h)},angle(angl),pinned(pnd),alreadyHovered(false),flip(type),
+texture(nullptr),image(img),absolutePosition(apos),relativePosition{0,0},anchor{int(0.5*image.source.w),int(0.5*image.source.h)},angle(angl),pinned(pnd),alreadyHovered(false),dragged(false),flip(type),
 currentAnimation(nullptr),animationStopped(false) { 
 	size.setSDLRect(image.source);
 }
@@ -118,7 +118,40 @@ void Sprite::update(double delta) {
 }
 
 void Sprite::controller(SDL_Event* event){
-	return;
+	
+	if(event->type == SDL_MOUSEBUTTONDOWN && this->isClicked()) {	//Объект нажат - нажатие
+		if(pressed == false) {
+			onClick(event->button);
+			pressed = true;
+		}
+	} else if(event->type == SDL_MOUSEBUTTONUP) {
+		if(pressed) {
+			onRelease(event->button);
+			pressed = false;
+		}
+		if(dragged) {
+			onDrop(event->button);
+			dragged= false;
+		}
+	} 
+	else if(event->type == SDL_MOUSEMOTION) {
+		if(pressed) {	//Объект нажат и мышь двигается - перетягивание
+			onDrag(event->motion);
+			if(!dragged) dragged = true;
+		}
+		else if(this->isHovered()) {	//Мышь была перемещена и данный объект не был наведен - ховер
+			if(alreadyHovered == false) {
+				onHover(event->motion);
+				alreadyHovered = true;
+			}
+		} else {					//Мышь была перемещена и данный объект был наведен - анховер
+			if(alreadyHovered) {
+				onUnhover(event->motion);
+				alreadyHovered = false;
+			}
+		}
+	}
+
 }
 
 void Sprite::addAnimation(std::string key,Animation animation) {
@@ -160,7 +193,7 @@ bool Sprite::isClicked() const {
 	SDL_Point clickedPosition = Game::getInstance()->getLastMouseClickPosition();
 	SDL_Rect destination = getRelativeDestination();
 
-	return SDL_PointInRect(&clickedPosition,&destination);
+	return SDL_PointInRect(&clickedPosition,&destination) ;
 
 }
 

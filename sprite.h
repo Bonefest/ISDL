@@ -27,6 +27,8 @@ private:
 	bool pinned;		//Состояние прикреплен ли спрайт к экрану (перемещается ли он относительно игровой камеры) (??? должна ли быть возможность быть прикрепленным относительно одного и неприкрепленным относительно другого?)
 
 	bool alreadyHovered;	//Состояние,наведена ли уже мышка на объект (нужно для того,чтобы не вызывать повторно событие наведения)
+	bool pressed;			//Состояние, был ли объект нажат (необходимо для определения события отпускания)
+	bool dragged;			//Состояние, перетаскивается ли объект в данный момент
 
 	SDL_RendererFlip flip;	//Хранит отражение,которое используется при отрисовке
 
@@ -91,10 +93,12 @@ public:
 
 	bool isAnimate() const;										//Возвращает активна ли в данный момент анимация
 
-	virtual void onClick(SDL_MouseButtonEvent event) {}			//Событие при нажатии мыши
-	virtual void onRelease() {}									//Событие при отпускании мыши
-	virtual void onHover() { alreadyHovered = true;}			//Событие при наведении мыши
-	virtual void onUnhover() { }
+	virtual void onClick(SDL_MouseButtonEvent event) { }		//Событие при нажатии мыши
+	virtual void onRelease(SDL_MouseButtonEvent event) {}		//Событие при отпускании мыши
+	virtual void onHover(SDL_MouseMotionEvent event) { }		//Событие при наведении мыши
+	virtual void onUnhover(SDL_MouseMotionEvent event) { }
+	virtual void onDrag(SDL_MouseMotionEvent event) { }         //Событие при перетягивании объекта
+	virtual void onDrop(SDL_MouseButtonEvent event) { }			//Событие при завершении перетягивания
 
 	bool isPinned() const;										//Прикреплен ли к экрану
 	void setPinned(bool value);
@@ -119,9 +123,10 @@ public:
 
 	void setText(const std::string& text);
 	void setText(const std::string& text,Rect position,SDL_Color textColor);	//Не рисует в прямом смысле,а просто создает текстуру из заданного текста и цвета
+/*
+	virtual void onHover(SDL_MouseMotionEvent event) { setText("hovered"); }
+	virtual void onUnhover(SDL_MouseMotionEvent event) { setText("unhovered"); }*/
 
-	virtual void onHover() { setText("hovered"); }
-	virtual void onUnhover() { setText("unhovered"); }
 
 	void setColor(SDL_Color textColor);
 	SDL_Color getColor() const;

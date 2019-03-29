@@ -8,8 +8,6 @@
 
 
 Scene::~Scene() {
-	clickedSprites.clear();
-	hoveredSprites.clear();
 	for(unsigned int counter = sceneSprites.size()-1; counter >= 0; counter--){
 		Sprite *spr = sceneSprites[counter];
 		delete spr;
@@ -24,44 +22,7 @@ Scene::~Scene() {
 
 
 void Scene::controller(SDL_Event* event) {
-	if(event->type == SDL_MOUSEBUTTONDOWN) {
-		for(auto spriteIter = sceneSprites.begin();spriteIter != sceneSprites.end();spriteIter++) {
-
-			if((*spriteIter)->isClicked()) {
-				(*spriteIter)->onClick(event->button);
-				clickedSprites.push_back(*spriteIter);
-			}
-		}
-	} else if(event->type == SDL_MOUSEBUTTONUP) {
-		for(auto clickedSpriteIter = clickedSprites.begin();clickedSpriteIter != clickedSprites.end();) {
-			
-			(*clickedSpriteIter)->onRelease();
-			clickedSpriteIter = clickedSprites.erase(clickedSpriteIter);
-
-		}
-
-	} else if(event->type == SDL_MOUSEMOTION) {
-		for(auto spriteIter = sceneSprites.begin();spriteIter != sceneSprites.end();spriteIter++) {
-
-			//Удаляем из списка все указатели на спрайты,на которые больше не наведена мышка
-			for(auto hoveredSpriteIter = hoveredSprites.begin();hoveredSpriteIter != hoveredSprites.end(); ) {
-				if( !(*hoveredSpriteIter)->isHovered()) {
-
-					(*hoveredSpriteIter)->onUnhover();
-					hoveredSpriteIter = hoveredSprites.erase(hoveredSpriteIter);
-				} else hoveredSpriteIter++;
-			}
-
-
-			//Если на спрайт наведа мышка и это первичное событие
-			if((*spriteIter)->isHovered() && !(*spriteIter)->isAlreadyHovered()) {
-				(*spriteIter)->onHover();
-				hoveredSprites.push_back(*spriteIter);
-			}
-
-			
-		}
-	}
+	
 	for(unsigned int counter = 0; counter < sceneSprites.size(); counter++){
 		sceneSprites[counter]->controller(event);
 	}

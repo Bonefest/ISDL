@@ -14,9 +14,6 @@
 class Scene {
 private:
 	std::vector<Sprite*> 			sceneSprites;	//Объекты,которые находяться на сцене
-	std::list<Sprite*>				clickedSprites;	//Объекты,которые нажаты.При отпускании мыши - список очищается
-	std::list<Sprite*>				hoveredSprites;	//Объекты,на которые наведена мышь.При движении мыши список,возможно обновляеться.
-
 	std::map<std::string,Camera*> 	sceneCameras;	//Камеры,которые находяться на сцене.Хранится
 													//в виде Имя Камеры - Значение
 
