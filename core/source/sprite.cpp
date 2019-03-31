@@ -1,7 +1,7 @@
 #include <cmath>
 
-#include "sprite.h"
-#include "game.h"
+#include "../sprite.h"
+#include "../game.h"
 
 Sprite::Sprite():texture(nullptr),image{},absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
 

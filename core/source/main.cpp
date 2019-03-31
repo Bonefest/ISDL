@@ -1,9 +1,9 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
-#include "game.h"
-#include "scene.h"
-#include "myScene.h"
+#include "../game.h"
+#include "../scene.h"
+#include "../../tests/myScene.h"
 
 #define DEFAULT_WIDTH 1280
 #define DEFAULT_HEIGHT 720

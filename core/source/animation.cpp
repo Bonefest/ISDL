@@ -1,4 +1,4 @@
-#include "animation.h"
+#include "../animation.h"
 
 Animation::Animation(SDL_Texture* text,short w,short h,short begX,short begY,float speed,bool lp,bool cmpl):
 	texture(text),begFrameX(begX),begFrameY(begY),curFrameX(begX),curFrameY(begY),

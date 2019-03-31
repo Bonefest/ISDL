@@ -1,5 +1,5 @@
-#include "sprite.h"
-#include "game.h"
+#include "../core/sprite.h"
+#include "../core/game.h"
 #include <iostream>
 
 class Block: public Sprite{

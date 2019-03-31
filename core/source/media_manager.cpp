@@ -1,7 +1,7 @@
 #include <fstream>
-#include "media_manager.h"
-#include "game.h"
-#include "json.hpp"
+#include "../media_manager.h"
+#include "../game.h"
+#include "../json.hpp"
 
 using Json=nlohmann::json;
 

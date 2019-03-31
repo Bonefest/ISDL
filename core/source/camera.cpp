@@ -1,5 +1,5 @@
-#include "camera.h"
-#include "game.h"
+#include "../camera.h"
+#include "../game.h"
 
 Camera::Camera(Type t,Sprite* obj,bool actv):type(t),object(obj),position{0,0},border(),active(actv)  { }
 

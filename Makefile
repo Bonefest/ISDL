@@ -2,7 +2,16 @@ CC=g++
 
 SDL_LIBS=-lSDL2 -lSDL2_image -lSDL2_ttf -std=c++11
 CFLAGS=-Wall
-FILES=main.cpp game.cpp vector.cpp animation.cpp camera.cpp logger.cpp sprite.cpp scene.cpp media_manager.cpp
+H_PATH=core
+SOURCE_PATH=$(H_PATH)/source
 
-test: main.h vector.h animation.h sprite.h logger.h scene.h camera.h media_manager.h
-	$(CC) $(CFLAGS) $(FILES)  -o game $(SDL_LIBS)
+_SFILES=main.cpp game.cpp vector.cpp animation.cpp camera.cpp logger.cpp sprite.cpp scene.cpp media_manager.cpp
+SFILES=$(patsubst %,$(SOURCE_PATH)/%,$(_SFILES))
+
+_HFILES=main.h vector.h animation.h sprite.h logger.h scene.h camera.h media_manager.h 
+HFILES=$(patsubst %,$(H_PATH)/%,$(_HFILES))
+
+%.o: %.cpp %(HFILES) $(CC) -c -o $@ $< $(CLFAGS)
+
+test: $(HFILES)
+	$(CC) $(CFLAGS) $(SFILES) -o game $(SDL_LIBS)

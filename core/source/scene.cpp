@@ -1,7 +1,5 @@
-//НИЖЕ ТЕСТ,МОЖНО УДАЛЯТЬ
-
-#include "scene.h"
-#include "game.h"
+#include "../scene.h"
+#include "../game.h"
 
 #include <sstream>
 #include <utility>

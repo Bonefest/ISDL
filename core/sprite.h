@@ -99,6 +99,7 @@ public:
 	virtual void onUnhover(SDL_MouseMotionEvent event) { }
 	virtual void onDrag(SDL_MouseMotionEvent event) { }         //Событие при перетягивании объекта
 	virtual void onDrop(SDL_MouseButtonEvent event) { }			//Событие при завершении перетягивания
+	virtual void onCollision(Sprite* object) {	}				//Событие при столкновении
 
 	bool isPinned() const;										//Прикреплен ли к экрану
 	void setPinned(bool value);

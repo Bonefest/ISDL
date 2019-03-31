@@ -1,10 +1,10 @@
 #include <string>
 #include <sstream>
-#include "game.h"
+#include "../game.h"
 #include <SDL2/SDL_ttf.h>
 
 
-#include "vector.h"
+#include "../vector.h"
 Game* Game::getInstance() {
 	static Game* game = new Game();
 	return game;

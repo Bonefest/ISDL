@@ -1,5 +1,5 @@
 #include <cmath>
-#include "vector.h"
+#include "../vector.h"
 
 
 void Vector2::calcToPolar() {
