@@ -10,6 +10,7 @@
 
 #include "camera.h"
 #include "sprite.h"
+#include "collision_manager.h"
 
 class Scene {
 private:
@@ -17,9 +18,9 @@ private:
 	std::map<std::string,Camera*> 	sceneCameras;	//Камеры,которые находяться на сцене.Хранится
 													//в виде Имя Камеры - Значение
 	
-
+	CollisionManager 			collisionManager;	//Менеджер для обработки коллизий
 public:
-	virtual ~Scene();	//НАДО РЕАЛИЗОВАТЬ УДАЛЕНИЕ
+	virtual ~Scene();	//НАДО РЕАЛИЗОВАТЬ УДАЛЕНИЕ(Сцена не должна удалять указатели самостоятельно)
 
 	//Обрабатывает события
 	virtual void controller(SDL_Event* event);
@@ -30,8 +31,12 @@ public:
 	//Рисует на сцене игровые данные
 	virtual void draw();
 
-	//Добавляет спрайт на сцену
-	void addSprite(Sprite* sprite);
+	//Добавляет спрайт на сцену с прямым порядком отрисовки и в коллизионный менеджер
+	void addSprite(Sprite* sprite,long collisionLevel=0);
+
+	//Добавляет спрайт на сцену с Z-порядком отрисовки и в коллизионный менеджер
+	void addSpriteWithZOrder(Sprite* sprite,long z_position=0,long collisionLevel=0);
+
 
 	//Добавляет камеру в словарь
 	void addCamera(std::string name,Camera* camera);
@@ -66,18 +71,5 @@ public:
 };
 */
 
-/////////////////////////////////////////////
-class CollisionManager {
-public:
-	enum {DEFAULT_LEVEL_COLLISION};
-private:
-	std::map< long,std::list<Sprite*> >  sprites;	//Объекты, которые хранятся на сцене (Ключ - уровень коллизии, значение - список объектов на этом уровне)
-public:
-	void addSprite(Sprite* sprite,long level=DEFAULT_LEVEL_COLLISION);
-	void removeSprite(Sprite* sprite);
-	virtual void calculate();					//Рассчитать столкновение всех объектов
-	Sprite* raycast(Rect pos,double angle,long level=DEFAULT_LEVEL_COLLISION);	//Пускание луча : задается позиция,направление и уровень коллизии.Возвращает первый объект, с которым столкнулся луч.
-	Sprite* touch(Rect pos,long level=DEFAULT_LEVEL_COLLISION);					//Ищет в заданной координате спрайт на заданном уровне коллизий.
-};
 
 #endif

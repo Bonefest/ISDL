@@ -27,14 +27,25 @@ public:
 
 	virtual void onDrag(SDL_MouseMotionEvent event) {
 		setPosition(event.x,event.y);
+		speed = 0;
 	}
 
 	virtual void onDrop(SDL_MouseButtonEvent event) {
-		setPosition(0,0);
+		
+		speed = 1;
+	}
+
+	virtual void onCollision(Sprite* sprite) {
+		speed = 0;
 	}
 	
+	virtual void update(double delta) {
+		Sprite::update(delta);
+		addPosition(0,0.098*delta*speed);
+	}
+
 	Block(SDL_Texture* texture,Rect absolutePosition,Rect size,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false):Sprite(texture, absolutePosition, size, angle, type, pinned){
 		
-		speed = 10;
+		speed = 1;
 	}
 };

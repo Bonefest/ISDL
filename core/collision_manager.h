@@ -10,6 +10,7 @@ public:
 	enum {DEFAULT_LEVEL_COLLISION};
 private:
 	std::map< long,std::list<Sprite*> >  sprites;	//Объекты, которые хранятся на сцене (Ключ - уровень коллизии, значение - список объектов на этом уровне)
+	void simpleCollisionAlgorithm();				//Алгоритм определения коллизий с сложностью N*N
 public:
 	void addSprite(Sprite* sprite,long level=DEFAULT_LEVEL_COLLISION);
 	void removeSprite(Sprite* sprite);

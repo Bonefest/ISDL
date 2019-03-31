@@ -41,6 +41,8 @@ void Scene::draw() {
 }
 
 void Scene::update(double delta) {
+	collisionManager.calculate();	//Рассчитывает коллизии
+
 	for(auto cameraIter=sceneCameras.begin();cameraIter!=sceneCameras.end();cameraIter++) 
 		cameraIter->second->update(delta);
 
@@ -49,8 +51,9 @@ void Scene::update(double delta) {
 }
 
 //Добавляет спрайт на сцену(фактически в очередь)
-void Scene::addSprite(Sprite* sprite) {
+void Scene::addSprite(Sprite* sprite,long collisionLevel) {
 	sceneSprites.push_back(sprite);
+	collisionManager.addSprite(sprite,collisionLevel);
 }
 
 //Добавляет камеру в словарь,где ключ - это фактически её название.	
