@@ -9,6 +9,7 @@
 #include "vector.h"
 #include "animation.h"
 #include "media_manager.h"
+#include "physics.h"
 
 //Реализует логику базового графического объекта 
 class Sprite {
@@ -59,6 +60,7 @@ public:
 	void setPosition(Rect position);
 	
 	void addPosition(double x,double y);	//Добавляет к текущей позиции заданые координаты
+	void addPosition(Vector2 xy);
 
 	void setSize(double w,double h);
 	void setSize(Rect size);

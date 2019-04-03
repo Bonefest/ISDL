@@ -23,6 +23,8 @@ void Sprite::addPosition(double x,double y) {
 	absolutePosition.y += y;
 }
 
+void Sprite::addPosition(Vector2 xy) : Sprite::addPosition(xy.getX(), xy.getY()){ };
+
 void Sprite::setPosition(double x,double y) {
 	
 	for(auto childIter = children.begin();childIter!=children.end();childIter++)
