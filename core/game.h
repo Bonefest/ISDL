@@ -27,18 +27,13 @@ private:
 
 	Uint64 lastTime;		//Время последнего кадра
 
-	std::map<SDL_Keycode,Uint64> pressedKeys;	//Нажатые клавиши клавиатуры
-	std::map<Uint8,Uint64> pressedButtons;		//Нажатые клавиши мыши
-	
-	SDL_Point lastMouseClickPosition;
-
 	//Обрабатывает некоторые события и делегирует их текущей сцене
 	void controller();
 
 	//Возвращает время,которое прошло от прошлого кадра
 	double getDeltaTime();
 
-	Game():lastMouseClickPosition{0,0}  { }
+	Game() { }
 	Game(const Game&)=delete;
 	Game& operator=(const Game&)=delete;
 
@@ -64,15 +59,6 @@ public:
 	void switchScene(Scene* scene) { currentScene = scene;}
 
 	static MediaManager* getMediaManager() { return MediaManager::getInstance();}
-
-	//Возвращает состояние переданной клавиши (нажата или нет)
-	bool isPressed(SDL_Keycode key);
-	bool isPressed(Uint8 key);
-
-	SDL_Point getLastMouseClickPosition() const { return lastMouseClickPosition; }
-
-	//Возвращает время,которое прошло с момента нажатия клавиши
-	long long getPressedTime(SDL_Keycode key);
 
 	SDL_Point getScreenSize() { return screenSize; }
 

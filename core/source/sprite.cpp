@@ -2,6 +2,7 @@
 
 #include "../sprite.h"
 #include "../game.h"
+#include "../input_manager.h"
 
 Sprite::Sprite():texture(nullptr),image{},absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
 
@@ -190,7 +191,7 @@ void Sprite::removeAnimation(std::string key) {
 }
 
 bool Sprite::isClicked() const {
-	SDL_Point clickedPosition = Game::getInstance()->getLastMouseClickPosition();
+	SDL_Point clickedPosition = MSDL::InputManager::getInstance()->getLastPressedMouseButtonPoint();
 	SDL_Rect destination = getRelativeDestination();
 
 	return SDL_PointInRect(&clickedPosition,&destination) ;

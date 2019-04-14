@@ -1,5 +1,6 @@
 #include "../core/sprite.h"
 #include "../core/game.h"
+#include "../core/input_manager.h"
 #include <iostream>
 
 class Block: public Sprite{
@@ -9,16 +10,16 @@ public:
 		Sprite::controller(event);
 		if(event->type == SDL_KEYDOWN) {
 
-			if(Game::getInstance()->isPressed(SDLK_a)) {
+			if(MSDL::InputManager::getInstance()->isKeyPressed(SDLK_a)) {
 				addPosition(-1*speed, 0);
 			}
-			if(Game::getInstance()->isPressed(SDLK_d)) {
+			if(MSDL::InputManager::getInstance()->isKeyPressed(SDLK_d)) {
 				addPosition(1*speed, 0);
 			}
-			if(Game::getInstance()->isPressed(SDLK_s)) {
+			if(MSDL::InputManager::getInstance()->isKeyPressed(SDLK_s)) {
 				addPosition(0, 1*speed);
 			}
-			if(Game::getInstance()->isPressed(SDLK_w)) {
+			if(MSDL::InputManager::getInstance()->isKeyPressed(SDLK_w)) {
 				addPosition(0, -1*speed);
 			}
 		}

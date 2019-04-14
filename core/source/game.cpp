@@ -1,8 +1,10 @@
 #include <string>
 #include <sstream>
-#include "../game.h"
 #include <SDL2/SDL_ttf.h>
+#include "../game.h"
+#include "../input_manager.h"
 
+using namespace MSDL;
 
 #include "../vector.h"
 Game* Game::getInstance() {
@@ -78,6 +80,9 @@ void Game::closeGame() {
 	MediaManager::getInstance()->close();
 	logger->log("MediaManager has successfully destroyed.");
 
+	InputManager::getInstance()->close();
+	logger->log("InputManager has successfully destroyed.");
+
 	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
@@ -95,35 +100,10 @@ void Game::controller() {
 			return;
 		} 
 
-		//Добавление нажатой клавиши мыши
-		else if(event.type == SDL_MOUSEBUTTONDOWN) {
-			if(!isPressed(event.button.button)) {
-				pressedButtons.insert(std::pair<Uint8,Uint64>(event.button.button,SDL_GetTicks()));
-				
-				lastMouseClickPosition.x = event.button.x;
-				lastMouseClickPosition.y = event.button.y;
-			}
-		}
-
-		//Если нажата клавиша и её нет в словаре - добавляем её в словарь.
-		//Добавляется до обработки сценой нажатий.
-		else if(event.type == SDL_KEYDOWN) {
-			if(!isPressed(event.key.keysym.sym))
-				pressedKeys.insert(std::pair<SDL_Keycode,Uint64>(event.key.keysym.sym,SDL_GetTicks()));	
-		}
+		
+		InputManager::getInstance()->processEvent(event);
 
 		currentScene->controller(&event);
-
-		//Если клавиша отпущена и она есть в словаре - удаляем её из словаря.
-		//Удаляется после обработки сценой прекращения нажатия клавиши
-		if(event.type == SDL_KEYUP) {
-			if(isPressed(event.key.keysym.sym)) {
-				pressedKeys.erase(event.key.keysym.sym);
-			}
-		} else if(event.type == SDL_MOUSEBUTTONUP) {
-			if(isPressed(event.button.button))
-				pressedButtons.erase(event.button.button);
-		}
 	}
 }
 
@@ -157,18 +137,3 @@ void Game::log(std::string message) {
 	logger->log(message);
 }
 
-bool Game::isPressed(SDL_Keycode key) {
-	return pressedKeys.find(key) != pressedKeys.end();
-}
-
-bool Game::isPressed(Uint8 key) {
-	return pressedButtons.find(key) != pressedButtons.end();
-}
-
-long long Game::getPressedTime(SDL_Keycode key) {
-	if(isPressed(key)) {
-		return SDL_GetTicks() - pressedKeys[key];
-	}
-
-	return -1ll;	//Лучше пусть это будет константа аля NONE
-}
