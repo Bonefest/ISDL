@@ -1,0 +1,16 @@
+StateManager - Синглтон, который помогает пользователю фреймворка выполнять некоторые действия качественнее в более простой способ. Основной задачей этого менеджера является ввод функций, которые меняют состояние заданого объекта за некоторое время или при некотором событии. Примером может быть некоторый (неполный) следующий набор методов:
+
+void moveTo(Sprite* obj,Rect pos,double time);	//Перемещает объект в заданную позицию
+void moveBy(Sprite* obj,Rect pos,double time);	//Перемещает объект на заданную позицию (относительно текущей)
+void moveToBy(Sprite* obj,Rect byPos,double time);
+
+void rotateTo(Sprite* obj,Rect angle,double time);
+void rotateBy(Sprite* obj,Rect angle,double time);
+
+void setCallbackOnEvent(Sprite* obj,UInt32 eventType);
+void setCallbackOnUserEvent(Sprite* obj,string eventName);
+
+void dyeTo(Sprite* obj,SDL_Color color,double time);
+
+void fadeIn(Scene* scene,double time);
+void fadeOut(Scene* scene,double time);

@@ -13,5 +13,5 @@ HFILES=$(patsubst %,$(H_PATH)/%,$(_HFILES))
 
 %.o: %.cpp %(HFILES) $(CC) -c -o $@ $< $(CLFAGS)
 
-test: $(HFILES)
-	$(CC) $(CFLAGS) $(SFILES) -o game $(SDL_LIBS)
+test: $(HFILES) tests/maze_scene.h
+	$(CC) $(CFLAGS) $(SFILES) tests/maze_scene.cpp -o game $(SDL_LIBS)
