@@ -14,10 +14,10 @@ void myCallback2() {
 
 void timer() {
 	static int score = 0;
-	if(score == 10) return;
+	if(score == 100) return;
 	score++;
 	std::cout << score << std::endl;
-	MSDL::StateManager::getInstance()->call(1000,timer);
+	return MSDL::StateManager::getInstance()->call(1000,timer);
 }
 
 class myScene : public Scene{
