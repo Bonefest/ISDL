@@ -4,14 +4,14 @@
 #include "../game.h"
 #include "../input_manager.h"
 
-Sprite::Sprite():texture(nullptr),image{},absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
+Sprite::Sprite():Object((Rect){0,0}),texture(nullptr),image{},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
 
-Sprite::Sprite(SDL_Texture* tex,Rect apos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
-texture(tex),image{},absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),pressed(false),dragged(false),flip(type),
+Sprite::Sprite(SDL_Texture* tex,Rect pos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
+Object(pos),texture(tex),image{},relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),pressed(false),dragged(false),flip(type),
 currentAnimation(nullptr),animationStopped(false) { }
 
-Sprite::Sprite(Image img,Rect apos,double angl,SDL_RendererFlip type,bool pnd):
-texture(nullptr),image(img),absolutePosition(apos),relativePosition{0,0},anchor{int(0.5*image.source.w),int(0.5*image.source.h)},angle(angl),pinned(pnd),alreadyHovered(false),dragged(false),flip(type),
+Sprite::Sprite(Image img,Rect pos,double angl,SDL_RendererFlip type,bool pnd):
+Object(pos),texture(nullptr),image(img),relativePosition{0,0},anchor{int(0.5*image.source.w),int(0.5*image.source.h)},angle(angl),pinned(pnd),alreadyHovered(false),dragged(false),flip(type),
 currentAnimation(nullptr),animationStopped(false) { 
 	size.setSDLRect(image.source);
 }
@@ -20,17 +20,16 @@ void Sprite::addPosition(double x,double y) {
 	for(auto childIter = children.begin();childIter != children.end();childIter++)
 		(*childIter)->addPosition(x,y);
 
-	absolutePosition.x += x;
-	absolutePosition.y += y;
+	Object::addPosition(x,y);
 }
 
 void Sprite::setPosition(double x,double y) {
-	
+	Rect absolutePosition = getPosition();
+
 	for(auto childIter = children.begin();childIter!=children.end();childIter++)
 		(*childIter)->addPosition(x-absolutePosition.x,y-absolutePosition.y);
 
-	absolutePosition.x = x;
-	absolutePosition.y = y; 
+	Object::setPosition(x,y);
 
 }
 
@@ -62,6 +61,8 @@ void Sprite::removeParent() {
 }
 
 SDL_Rect Sprite::getAbsoluteDestination() const {
+	Rect absolutePosition = getPosition();
+
 	return (SDL_Rect){(int)round(absolutePosition.x),(int)round(absolutePosition.y),(int)round(size.x),(int)round(size.y)};
 }
 
@@ -79,6 +80,8 @@ void Sprite::setImage(Image _image) {
 
 void Sprite::draw(SDL_Renderer* renderer,Rect cameraPosition,double cameraAngle) {
 	if(pinned) { cameraPosition.x = 0; cameraPosition.y = 0; } //Если спрайт прикреплен,меняем позицию камеры в 0 (по сути удаляем позицинирование относительно камеры)
+
+	Rect absolutePosition = getPosition();
 
 	relativePosition.x = absolutePosition.x-cameraPosition.x;	//Устанавливаем относительную
 	relativePosition.y = absolutePosition.y-cameraPosition.y;	//позицию.
@@ -250,12 +253,12 @@ void Label::setText(const std::string& text,Rect position,SDL_Color textColor) {
 }
 
 void Label::setText(const std::string& text) {
-	setText(text,getAbsolutePosition(),lastColor);
+	setText(text,getPosition(),lastColor);
 
 }
 
 void Label::setColor(SDL_Color textColor) {
-	setText(currentText,getAbsolutePosition(),textColor);
+	setText(currentText,getPosition(),textColor);
 }
 
 //////////////////////////////////////////////

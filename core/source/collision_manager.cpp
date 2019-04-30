@@ -13,8 +13,8 @@ void CollisionManager::simpleCollisionAlgorithm() {
 			for(auto objTwoIter=levelIterPair->second.begin();objTwoIter!=levelIterPair->second.end();objTwoIter++) {
 				if(*objOneIter==*objTwoIter) continue;	//Если это один и тот же объект
 
-				SDL_Rect oneSDLPos = (*objOneIter)->getAbsolutePosition().toSDLRect();
-				SDL_Rect twoSDLPos = (*objTwoIter)->getAbsolutePosition().toSDLRect();
+				SDL_Rect oneSDLPos = (*objOneIter)->getPosition().toSDLRect();
+				SDL_Rect twoSDLPos = (*objTwoIter)->getPosition().toSDLRect();
 
 				SDL_Rect oneSDLSize = (*objOneIter)->getSize().toSDLRect();
 				SDL_Rect twoSDLSize = (*objTwoIter)->getSize().toSDLRect();

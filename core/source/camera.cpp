@@ -1,24 +1,20 @@
 #include "../camera.h"
 #include "../game.h"
 
-Camera::Camera(Type t,Sprite* obj,bool actv):type(t),object(obj),position{0,0},border(),active(actv)  { }
+Camera::Camera(Type t,Sprite* obj,bool actv):Object((Rect){0,0}),type(t),object(obj),border(),active(actv)  { }
 
 Camera::Camera(Type t,Sprite* obj,bool actv,Rect pos,Rect brdr,double angl):
-type(t),object(obj),position(pos),border(brdr),angle(angl),active(actv) { }
+Object(pos),type(t),object(obj),border(brdr),angle(angl),active(actv) { }
 
 
-void Camera::setPosition(double x,double y) { position.x = x; position.y = y;}
-
-void Camera::setPosition(Rect pos) { position = pos; }
-
-void Camera::update(float delta) {
+void Camera::update(double delta) {
 	if(!fixed && active) {
 		SDL_Point screenSize = Game::getInstance()->getScreenSize();
 		Rect objectPosition;
 		Rect objectSize;
 
 		if(object != nullptr) { 
-			objectPosition = object->getAbsolutePosition();
+			objectPosition = object->getPosition();
 			objectSize = object->getSize();
 		}
 		else { 
@@ -29,8 +25,10 @@ void Camera::update(float delta) {
 		switch(type) {
 			case None:break;
 			case Centered:
-				position.x = objectPosition.x - screenSize.x/2 + objectSize.x/2;
-				position.y = objectPosition.y - screenSize.y/2 + objectSize.y/2;
+				Rect newPosition;
+				newPosition.x = objectPosition.x - screenSize.x/2 + objectSize.x/2;
+				newPosition.y = objectPosition.y - screenSize.y/2 + objectSize.y/2;
+				setPosition(newPosition);
 				break;
 			case Sleeper:break;
 			case Rectangle:break;

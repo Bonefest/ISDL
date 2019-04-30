@@ -10,14 +10,31 @@
 #include "animation.h"
 #include "media_manager.h"
 
+class Object {
+private:
+	Rect position;
+
+public:
+	Object(Rect pos):position(pos) {}
+
+	virtual void update(double delta)=0;
+
+	virtual void setPosition(double x,double y) { position.x = x; position.y = y; }
+	virtual void setPosition(Rect position) { this->position = position; }
+
+	virtual void addPosition(double x,double y) { position.x += x; position.y += y; }
+	virtual void addPosition(Rect position) { this->position.x += position.x; this->position.y += position.y; }
+
+	virtual Rect getPosition() const { return position; }
+};
+
 //Реализует логику базового графического объекта 
-class Sprite {
+class Sprite : public Object{
 private:
 	SDL_Texture* texture;	//Главное отображение спрайта - если у спрайта нет анимаций вовсе или нет активной анимации,то эта текстура является его отображением.
 
 	Image image;			//Главное отображение спрайта - если у спрайта нет анимаций вовсе или нет активной анимации, то это изображение является его отображением.В отличии от текстуры,является более предпочтительным из-за того,что может быть частью текстуры,а не одним целым и как следствие,можно легко менять,по сути одну и ту же текстуру.Если image не задан,а texture - задано (не указывает на nullptr),то отображается вся текстура
 
-	Rect absolutePosition;	//Абсолютная позиция в мире
 	Rect relativePosition;	//Позиция на экране (Warning: позиция обновляется при отрисовке --> при наличие двух активных камер,позиция будет оставаться за последней)
 	Rect size;
 	SDL_Point anchor;	//Точка вращения
@@ -48,8 +65,6 @@ public:
 	Sprite(Image image,Rect absolutePosition,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false);
 	virtual ~Sprite() {}
 
-	Rect getAbsolutePosition() const { return absolutePosition; }
-
 	Rect getSize() const { return size;}
 
 	void setTexture(SDL_Texture* texture);	//Меняет текстуру
@@ -63,8 +78,9 @@ public:
 	void setSize(double w,double h);
 	void setSize(Rect size);
 
-	void setAngle(float angle);
-	float getAngle();
+	void setAngle(float angle) { this->angle = angle; }
+	void addAngle(float angle) { this->angle += angle; }
+	float getAngle() { return angle; }
 
 	void setFlip(SDL_RendererFlip type) { flip = type; }
 

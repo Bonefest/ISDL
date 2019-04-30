@@ -42,7 +42,6 @@ public:
 	
 	virtual void update(double delta) {
 		Sprite::update(delta);
-		addPosition(0,0.098*delta*speed);
 	}
 
 	Block(SDL_Texture* texture,Rect absolutePosition,Rect size,double angle = 0.0,SDL_RendererFlip type=SDL_FLIP_NONE,bool pinned = false):Sprite(texture, absolutePosition, size, angle, type, pinned){

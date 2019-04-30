@@ -3,6 +3,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "../game.h"
 #include "../input_manager.h"
+#include "../state_manager.h"
 
 using namespace MSDL;
 
@@ -121,6 +122,7 @@ void Game::startGame() {
 //	Game::getInstance()->log(std::to_string(vect.getPosition().x));
 	while(!exitStatus) {
 		controller();
+		StateManager::getInstance()->update(getDeltaTime());
 		currentScene->update(getDeltaTime());
 		draw();
 	}
