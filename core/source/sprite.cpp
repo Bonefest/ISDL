@@ -4,14 +4,14 @@
 #include "../game.h"
 #include "../input_manager.h"
 
-Sprite::Sprite():Object((Rect){0,0}),texture(nullptr),image{},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
+Sprite::Sprite():Object((Rect){0,0}),texture(nullptr),image{},spriteColor(255,255,255,255),relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
 
 Sprite::Sprite(SDL_Texture* tex,Rect pos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
-Object(pos),texture(tex),image{},relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),pressed(false),dragged(false),flip(type),
+Object(pos),texture(tex),image{},spriteColor(255,255,255,255),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),pressed(false),dragged(false),flip(type),
 currentAnimation(nullptr),animationStopped(false) { }
 
 Sprite::Sprite(Image img,Rect pos,double angl,SDL_RendererFlip type,bool pnd):
-Object(pos),texture(nullptr),image(img),relativePosition{0,0},anchor{int(0.5*image.source.w),int(0.5*image.source.h)},angle(angl),pinned(pnd),alreadyHovered(false),dragged(false),flip(type),
+Object(pos),texture(nullptr),image(img),spriteColor(255,255,255,255),relativePosition{0,0},anchor{int(0.5*image.source.w),int(0.5*image.source.h)},angle(angl),pinned(pnd),alreadyHovered(false),dragged(false),flip(type),
 currentAnimation(nullptr),animationStopped(false) { 
 	size.setSDLRect(image.source);
 }
@@ -105,6 +105,9 @@ void Sprite::draw(SDL_Renderer* renderer,Rect cameraPosition,double cameraAngle)
 	else
 		source = currentAnimation->getFrameSource();
 
+	SDL_SetTextureBlendMode(sourceTexture,SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(sourceTexture,Uint8(round(spriteColor.a)));
+	SDL_SetTextureColorMod(sourceTexture,Uint8(round(spriteColor.r)),Uint8(round(spriteColor.g)),Uint8(round(spriteColor.b)));
 	SDL_RenderCopyEx(renderer,sourceTexture,&source,&destination,angle+(int)round(cameraAngle),&anchor,flip);
 	
 	//Рисуем всех детей

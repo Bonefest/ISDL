@@ -4,8 +4,10 @@
 #include "Block.h"
 #include <iostream>
 
+bool finish = false;
+
 void myCallback() {
-	std::cout << "Finish!" << std::endl;
+	finish = true;
 }
 
 void myCallback2() {
@@ -39,13 +41,29 @@ public:
 		addSprite(sblock);
 		addSprite(label);
 
-		MSDL::StateManager::getInstance()->moveTo(block,(Rect){500,0},1000,myCallback);
-		MSDL::StateManager::getInstance()->rotateTo(sblock,90,5000,myCallback2);
 		MSDL::StateManager::getInstance()->call(1000,timer);
+		MSDL::StateManager::getInstance()->paintTo(sblock,(SDL_Color){0,0,0,0},1000,myCallback);
 
 		addCamera("camera", cam);
 	}
 
+	void update(double delta) {
+		Scene::update(delta);
+
+		if(finish) {
+
+			Color color = sblock->getColor();
+			if(color.a == 255) {
+				MSDL::StateManager::getInstance()->paintTo(sblock,(SDL_Color){0,0,0,0},1000,myCallback);
+			} else
+				MSDL::StateManager::getInstance()->paintTo(sblock,(SDL_Color){255,255,255,255},1000,myCallback);
+			MSDL::StateManager::getInstance()->moveBy(block,nullptr,(Rect){10,10},500);
+			MSDL::StateManager::getInstance()->rotateBy(block,nullptr,45,500);
+
+			finish = false;
+		}
+	}
 
 
 };
+

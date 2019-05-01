@@ -4,6 +4,8 @@ using namespace MSDL;
 using namespace MSDL::StandardActions;
 
 MoveTo::MoveTo(Object* obj, Rect position, double duration, v_callback finishCallback ):Action(duration,finishCallback),object(obj),curTime(0) {
+	if(duration <= 0) duration = 1;
+
 	Rect objectPosition = obj->getPosition();
 
 	speed.x = (position.x - objectPosition.x)/duration;
@@ -22,6 +24,8 @@ void MoveTo::update(double delta) {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 RotateTo::RotateTo(Sprite* spr, double angle, double duration, v_callback finishCallback):Action(duration,finishCallback),sprite(spr),curTime(0) {
+	if(duration <= 0) duration = 1;
+
 	double objectAngle = spr->getAngle();
 
 	speed = (angle-objectAngle)/duration;
@@ -35,12 +39,36 @@ void RotateTo::update(double delta) {
 		curTime += delta;
 	}
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-PaintTo::PaintTo(Sprite* spr, SDL_Color color , double duration, v_callback finishCallback):Action(duration,finishCallback) {
-	//НЕ РЕАЛИЗОВАНО
+
+PaintTo::PaintTo(Sprite* spr, Color color , double duration, v_callback finishCallback):Action(duration,finishCallback),sprite(spr),curTime(0) {
+	if(duration <= 0) duration = 1;
+
+	Color spriteColor = spr->getColor();
+	speedColor.r = (color.r - spriteColor.r)/duration;
+	speedColor.g = (color.g - spriteColor.g)/duration;
+	speedColor.b = (color.b - spriteColor.b)/duration;
+	speedColor.a = (color.a - spriteColor.a)/duration;
+
 }
-*/
+
+bool PaintTo::isFinished() { return curTime >= getDuration(); }
+
+void PaintTo::update(double delta) {
+	if(!isFinished() ) {
+		Color spriteColor = sprite->getColor();
+		spriteColor.r += speedColor.r*delta;
+		spriteColor.g += speedColor.g*delta;
+		spriteColor.b += speedColor.b*delta;
+		spriteColor.a += speedColor.a*delta;
+
+		sprite->setColor(spriteColor);
+
+		curTime += delta;
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 Call::Call(double duration,v_callback finishCallback):Action(duration,finishCallback),curTime(0) {}
 
@@ -84,8 +112,31 @@ void StateManager::moveTo(Object* object, Rect position, double duration, v_call
 	actionList.push_back(new MoveTo(object,position,duration, finishCallback));
 }
 
+void StateManager::moveBy(Object* movable, Object* comp, Rect position , double duration, v_callback finishCallback) {
+	Rect relativePosition;
+	if(comp == nullptr) relativePosition = movable->getPosition();
+	else relativePosition = comp->getPosition();
+
+	position.x += relativePosition.x;
+	position.y += relativePosition.y;
+
+	actionList.push_back(new MoveTo(movable,position, duration, finishCallback ));
+}
+
 void StateManager::rotateTo(Sprite* sprite, double angle, double duration, v_callback finishCallback) {
 	actionList.push_back(new RotateTo(sprite,angle,duration,finishCallback));
+}
+
+void StateManager::rotateBy(Sprite* rotateable, Sprite* comp, double angle , double duration, v_callback finishCallback) {
+	double relativeAngle;
+	if(comp == nullptr) relativeAngle = rotateable->getAngle();
+	else relativeAngle = comp->getAngle();
+
+	actionList.push_back(new RotateTo(rotateable, angle+relativeAngle , duration, finishCallback));
+}
+
+void StateManager::paintTo(Sprite* sprite,Color color, double time, v_callback finishCallback) {
+	actionList.push_back(new PaintTo(sprite,color,time,finishCallback));
 }
 
 void StateManager::call(double duration,v_callback finishCallback) {

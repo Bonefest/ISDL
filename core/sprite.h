@@ -10,6 +10,60 @@
 #include "animation.h"
 #include "media_manager.h"
 
+//Структура для определения цвета (Для более точного и плавного цвета в отличии от SDL_Color)
+struct Color {
+
+	double r;
+	double g;
+	double b;
+	double a;
+
+	Color(double red=0,double green=0,double blue=0,double alpha=0):r(red),g(green),b(blue),a(alpha) { setSafeColor(); }
+	Color(SDL_Color color):r(color.r),g(color.g),b(color.b),a(color.a) { setSafeColor(); }
+
+	SDL_Color getSDLColor() const {
+		return (SDL_Color){Uint8(round(r)),Uint8(round(g)),Uint8(round(b)),Uint8(round(a))};
+	}
+
+	Color& operator=(const Color& color) {
+		r = color.r;
+		g = color.g;
+		b = color.b;
+		a = color.a;
+
+		setSafeColor();
+
+		return *this;
+	}
+
+	Color& operator=(const SDL_Color& color) {
+		r = color.r;
+		g = color.g;
+		b = color.b;
+		a = color.a;
+
+		setSafeColor();
+
+		return *this;
+	}
+
+private:
+	void setSafeColor() {
+		if(r > 255) r = 255;
+		else if(r < 0) r = 0;
+
+		if(g > 255) g = 255;
+		else if(g < 0) g = 0;
+
+		if(b > 255) b = 255;
+		else if(b < 0) b = 0;
+
+		if(a > 255) a = 255;
+		else if(a < 0) a = 0;
+
+	}
+};
+
 class Object {
 private:
 	Rect position;
@@ -34,6 +88,8 @@ private:
 	SDL_Texture* texture;	//Главное отображение спрайта - если у спрайта нет анимаций вовсе или нет активной анимации,то эта текстура является его отображением.
 
 	Image image;			//Главное отображение спрайта - если у спрайта нет анимаций вовсе или нет активной анимации, то это изображение является его отображением.В отличии от текстуры,является более предпочтительным из-за того,что может быть частью текстуры,а не одним целым и как следствие,можно легко менять,по сути одну и ту же текстуру.Если image не задан,а texture - задано (не указывает на nullptr),то отображается вся текстура
+
+	Color spriteColor;		//Цвет графического объекта
 
 	Rect relativePosition;	//Позиция на экране (Warning: позиция обновляется при отрисовке --> при наличие двух активных камер,позиция будет оставаться за последней)
 	Rect size;
@@ -69,6 +125,10 @@ public:
 
 	void setTexture(SDL_Texture* texture);	//Меняет текстуру
 	void setImage(Image image);				//Меняет изображение
+
+	void setColor(SDL_Color color) { spriteColor = color; }
+	void setColor(Color color) { spriteColor = color; }
+	Color getColor() const { return spriteColor; }
 
 	void setPosition(double x,double y);
 	void setPosition(Rect position);

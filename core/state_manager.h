@@ -47,19 +47,6 @@ namespace MSDL {
 			bool isFinished();
 		};
 
-		/*//Действие перемещения в точку относительного чего-то
-		class MoveBy : public Action {
-		private:
-			Object* moveable;
-
-			double curTime;
-		public:
-			MoveBy(Object* moveable,Object* comp,double duration,v_callback finishCallback=nullptr );
-
-			void update(double delta);
-			bool isFinished();
-		};*/
-
 		//Действие поворота
 		class RotateTo : public Action {
 		private:
@@ -75,29 +62,15 @@ namespace MSDL {
 			bool isFinished();
 		};
 
-		/*//Действие поворота относительно чего-то
-		class RotateBy : public Action {
-		private:
-			Object* rotateable;
-			Object* object;
-
-			double curTime;
-		public:
-			RotateBy(Object* rotateable,Object* comp,double duration, v_callback finishCallback=nullptr );
-
-			void update(double delta);
-			bool isFinished();
-		};
-*/
 		//Действие покраски в заданный цвет
 		class PaintTo : public Action {
 		private:
 			Sprite* sprite;
-			SDL_Color speedColor;
+			Color speedColor;
 
 			double curTime;
 		public:
-			PaintTo(Sprite* sprite, SDL_Color color, double duration, v_callback finishCallback=nullptr );
+			PaintTo(Sprite* sprite,Color color, double duration, v_callback finishCallback=nullptr );
 			virtual ~PaintTo() {}
 
 			void update(double delta);
@@ -134,19 +107,19 @@ namespace MSDL {
 		void update(double delta);
 
 		//Создает действие перемещения объекта в точку
-		void moveTo(Object* object, Rect position, double time, v_callback finishCallback=nullptr );
+		void moveTo(Object* object, Rect position, double duration, v_callback finishCallback=nullptr );
 		
 		//Создает действие перемещения объекта относительно чего-то в точку
-		void moveBy(Object* movable, Object* comp, double time, v_callback finishCallback=nullptr );
+		void moveBy(Object* movable, Object* comp, Rect position , double duration, v_callback finishCallback=nullptr );
 
 		//Создает действие поворота объекта
-		void rotateTo(Sprite* object, double angle, double time, v_callback finishCallback=nullptr );
+		void rotateTo(Sprite* object, double angle, double duration, v_callback finishCallback=nullptr );
 
 		//Cоздает действие поворота объекта относительно чего-то
-		void rotateBy(Sprite* rotateable, Sprite* comp, double time, v_callback finishCallback=nullptr );
+		void rotateBy(Sprite* rotateable, Sprite* comp, double angle , double duration, v_callback finishCallback=nullptr );
 
 		//Создает действие покраски объекта в цвет
-		void paintTo(Sprite* sprite, SDL_Color color, double time, v_callback finishCallback=nullptr );
+		void paintTo(Sprite* sprite, Color color, double time, v_callback finishCallback=nullptr );
 
 		//Создает действие вызова функтора
 		void call(double time,v_callback finishCallback=nullptr );
