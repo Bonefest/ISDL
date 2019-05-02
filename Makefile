@@ -1,6 +1,7 @@
 CC=g++
+CC_WINDOWS=i686-w64-mingw32-g++
 
-SDL_LIBS=-lSDL2 -lSDL2_image -lSDL2_ttf -std=c++11
+SDL_LIBS=-lSDL2 -lSDL2_image -lSDL2_ttf -std=c++11 -static-libgcc -static-libstdc++
 CFLAGS=-Wall
 H_PATH=core
 SOURCE_PATH=$(H_PATH)/source
@@ -13,5 +14,8 @@ HFILES=$(patsubst %,$(H_PATH)/%,$(_HFILES))
 
 %.o: %.cpp %(HFILES) $(CC) -c -o $@ $< $(CLFAGS)
 
-test: $(HFILES)
+all: $(HFILES)
 	$(CC) $(CFLAGS) $(SFILES) -o game $(SDL_LIBS)
+windows: $(HFILES)
+	$(CC_WINDOWS) $(CFLAGS) $(SFILES) -o game.exe -lmingw32 -lSDL2main $(SDL_LIBS)
+	

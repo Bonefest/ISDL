@@ -108,7 +108,7 @@ void Sprite::draw(SDL_Renderer* renderer,Rect cameraPosition,double cameraAngle)
 	SDL_SetTextureBlendMode(sourceTexture,SDL_BLENDMODE_BLEND);
 	SDL_SetTextureAlphaMod(sourceTexture,Uint8(round(spriteColor.a)));
 	SDL_SetTextureColorMod(sourceTexture,Uint8(round(spriteColor.r)),Uint8(round(spriteColor.g)),Uint8(round(spriteColor.b)));
-	SDL_RenderCopyEx(renderer,sourceTexture,&source,&destination,angle+(int)round(cameraAngle),&anchor,flip);
+	SDL_RenderCopyEx(renderer,sourceTexture,&source,&destination,angle,&anchor,flip);
 	
 	//Рисуем всех детей
 	for(auto childIter = children.begin();childIter != children.end();childIter++)

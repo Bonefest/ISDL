@@ -5,6 +5,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include <cmath>
 
 #include "vector.h"
 #include "animation.h"

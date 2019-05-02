@@ -8,7 +8,7 @@
 #define DEFAULT_WIDTH 1280
 #define DEFAULT_HEIGHT 720
 
-int main(int argc, char const *argv[]) {
+int main(int argv, char** args) {
 	Game::getInstance()->initGame(DEFAULT_WIDTH,DEFAULT_HEIGHT,"Game",SDL_INIT_VIDEO,SDL_WINDOW_SHOWN);
 	myScene* scene = new myScene();
 	Game::getInstance()->switchScene(scene);
