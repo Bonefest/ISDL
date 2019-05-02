@@ -32,10 +32,10 @@ public:
 	virtual void draw();
 
 	//Добавляет спрайт на сцену с прямым порядком отрисовки и в коллизионный менеджер
-	void addSprite(Sprite* sprite,long collisionLevel=0);
+	void addSprite(Sprite* sprite,long collisionLevel=CollisionManager::DEFAULT_LEVEL_COLLISION);
 
 	//Добавляет спрайт на сцену с Z-порядком отрисовки и в коллизионный менеджер
-	void addSpriteWithZOrder(Sprite* sprite,long z_position=0,long collisionLevel=0);
+	void addSpriteWithZOrder(Sprite* sprite,long z_position=0,long collisionLevel=CollisionManager::DEFAULT_LEVEL_COLLISION);
 
 
 	//Добавляет камеру в словарь
@@ -43,6 +43,10 @@ public:
 
 	//Удаляет камеру из словаря
 	void removeCamera(std::string name);
+
+
+	//WARNING!
+	CollisionManager* getCollisionManager() { return &collisionManager; }
 
 };
 

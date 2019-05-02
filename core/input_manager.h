@@ -36,6 +36,7 @@ namespace MSDL {
 
 		SDL_MouseButtonEvent getLastPressedMouseButton() const;		//Возвращает последнюю нажатую клавишу мыши
 		SDL_Point getLastPressedMouseButtonPoint() const;			//Возвращает точку нажатия последней клавиши мыши
+		SDL_Point getCursorPosition() const;						//Возвращает позицию курсора
 
 		void close();	//Очищает менеджер входных событий
 	};

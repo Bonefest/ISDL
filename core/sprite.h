@@ -10,7 +10,7 @@
 #include "animation.h"
 #include "media_manager.h"
 
-//Структура для определения цвета (Для более точного и плавного цвета в отличии от SDL_Color)
+//Структура для определения цвета (Для более точного и плавного цвета, в отличии от SDL_Color)
 struct Color {
 
 	double r;
@@ -110,6 +110,10 @@ private:
 
 	bool animationStopped;	//Остановлено обновление анимации
 
+	long long id;								//ID спрайта
+	std::string name;							//Имя спрайта
+	std::string tag;							//Тэг спрайта - распространяется на все дочерние объекты
+
 	Sprite* parent;								//Родительский объект
 	std::list<Sprite*> children;				//Дочерние объекты, необходимы для относительного позиционирования. (Башня танка позицинируется относительно его тела)
 
@@ -128,6 +132,7 @@ public:
 
 	void setColor(SDL_Color color) { spriteColor = color; }
 	void setColor(Color color) { spriteColor = color; }
+	void setColor(double red,double green,double blue,double alpha) { spriteColor = Color(red,green,blue,alpha); }
 	Color getColor() const { return spriteColor; }
 
 	void setPosition(double x,double y);

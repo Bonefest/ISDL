@@ -3,7 +3,7 @@
 using namespace MSDL;
 using namespace MSDL::StandardActions;
 
-MoveTo::MoveTo(Object* obj, Rect position, double duration, v_callback finishCallback ):Action(duration,finishCallback),object(obj),curTime(0) {
+MoveTo::MoveTo(Object* obj, Rect position, double duration, v_callback finishCallback ):Action(duration,finishCallback),object(obj),endPos(position),curTime(0) {
 	if(duration <= 0) duration = 1;
 
 	Rect objectPosition = obj->getPosition();
@@ -21,9 +21,14 @@ void MoveTo::update(double delta) {
 	}
 }
 
+void MoveTo::finish() {
+	Action::finish();
+	object->setPosition(endPos);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-RotateTo::RotateTo(Sprite* spr, double angle, double duration, v_callback finishCallback):Action(duration,finishCallback),sprite(spr),curTime(0) {
+RotateTo::RotateTo(Sprite* spr, double angle, double duration, v_callback finishCallback):Action(duration,finishCallback),sprite(spr),endAngle(angle),curTime(0) {
 	if(duration <= 0) duration = 1;
 
 	double objectAngle = spr->getAngle();
@@ -40,9 +45,13 @@ void RotateTo::update(double delta) {
 	}
 }
 
+void RotateTo::finish() {
+	Action::finish();
+	sprite->setAngle(endAngle);
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-PaintTo::PaintTo(Sprite* spr, Color color , double duration, v_callback finishCallback):Action(duration,finishCallback),sprite(spr),curTime(0) {
+PaintTo::PaintTo(Sprite* spr, Color color , double duration, v_callback finishCallback):Action(duration,finishCallback),sprite(spr),endColor(color),curTime(0) {
 	if(duration <= 0) duration = 1;
 
 	Color spriteColor = spr->getColor();
@@ -69,6 +78,11 @@ void PaintTo::update(double delta) {
 	}
 }
 
+void PaintTo::finish() {
+	Action::finish();
+	sprite->setColor(endColor);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 Call::Call(double duration,v_callback finishCallback):Action(duration,finishCallback),curTime(0) {}
 
@@ -78,6 +92,8 @@ void Call::update(double delta) {
 	if(!isFinished())
 		curTime += delta;
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 StateManager* StateManager::getInstance() {
 	static StateManager* stateManager = new StateManager();

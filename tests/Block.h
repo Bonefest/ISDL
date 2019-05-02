@@ -37,7 +37,7 @@ public:
 	}
 
 	virtual void onCollision(Sprite* sprite) {
-		speed = 0;
+		;
 	}
 	
 	virtual void update(double delta) {

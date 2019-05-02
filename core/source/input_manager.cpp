@@ -67,6 +67,12 @@ SDL_Point InputManager::getLastPressedMouseButtonPoint() const {
 	return (SDL_Point){lastPressedButton.x,lastPressedButton.y};
 }
 
+SDL_Point InputManager::getCursorPosition() const {
+	int x,y;
+	SDL_GetMouseState(&x,&y);
+	return (SDL_Point){x,y};
+}
+
 void InputManager::close() {
 	delete getInstance();
 }

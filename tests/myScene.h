@@ -1,26 +1,9 @@
 #include "../core/scene.h"
 #include "../core/game.h"
-#include "../core/state_manager.h"
+#include "../core/input_manager.h"
+#include "../core/collision_manager.h"
 #include "Block.h"
 #include <iostream>
-
-bool finish = false;
-
-void myCallback() {
-	finish = true;
-}
-
-void myCallback2() {
-	std::cout << "FINISHSHSHS" << std::endl;
-}
-
-void timer() {
-	static int score = 0;
-	if(score == 100) return;
-	score++;
-	std::cout << score << std::endl;
-	return MSDL::StateManager::getInstance()->call(1000,timer);
-}
 
 class myScene : public Scene{
 	Block *block;
@@ -28,12 +11,14 @@ class myScene : public Scene{
 	Label* label;
 	Camera *cam;
 
+	Sprite* element;
 public:
 	myScene(){
+		element = nullptr;
 
 		block = new Block(Game::getMediaManager()->loadTexture("tests/block.png"), (Rect){50, 50}, (Rect){32, 32});
-		sblock = new Sprite(Game::getMediaManager()->loadTexture("tests/block.png"), (Rect){50, 250}, (Rect){32, 32});
-		label = new Label(Game::getMediaManager()->loadFont("resources/default.ttf",36),"TEST",(Rect){150,150},(SDL_Color){255,255,255});
+		sblock = new Sprite(Game::getMediaManager()->loadTexture("tests/block.png"), (Rect){80, 65}, (Rect){32, 32});
+		label = new Label(Game::getMediaManager()->loadFont("resources/default.ttf",36),"TeSt",(Rect){80,80},(SDL_Color){255,255,255});
 
 		cam = new Camera();
 
@@ -41,29 +26,37 @@ public:
 		addSprite(sblock);
 		addSprite(label);
 
-		MSDL::StateManager::getInstance()->call(1000,timer);
-		MSDL::StateManager::getInstance()->paintTo(sblock,(SDL_Color){0,0,0,0},1000,myCallback);
-
 		addCamera("camera", cam);
 	}
 
 	void update(double delta) {
 		Scene::update(delta);
-
-		if(finish) {
-
-			Color color = sblock->getColor();
-			if(color.a == 255) {
-				MSDL::StateManager::getInstance()->paintTo(sblock,(SDL_Color){0,0,0,0},1000,myCallback);
-			} else
-				MSDL::StateManager::getInstance()->paintTo(sblock,(SDL_Color){255,255,255,255},1000,myCallback);
-			MSDL::StateManager::getInstance()->moveBy(block,nullptr,(Rect){10,10},500);
-			MSDL::StateManager::getInstance()->rotateBy(block,nullptr,45,500);
-
-			finish = false;
+		SDL_Point cursor = MSDL::InputManager::getInstance()->getCursorPosition();
+		Sprite* sprite = getCollisionManager()->raycast((Rect){0,0},(Rect){double(cursor.x),double(cursor.y)});
+		if(sprite != nullptr) {
+			if(element != nullptr) {
+				element->setColor(255,255,255,255);
+				sprite->setColor(255,0,0,255);
+				element = sprite;
+			}
+			else {
+				sprite->setColor(255,0,0,255);
+				element = sprite;
+			}
+		} else if(element != nullptr) {
+			element->setColor(255,255,255,255);
+			element = nullptr;
 		}
+
 	}
 
+	void draw() {
+		Scene::draw();
+		SDL_Point cursor = MSDL::InputManager::getInstance()->getCursorPosition();
+		SDL_SetRenderDrawColor(Game::getInstance()->getRenderer(),255,255,255,255);
+		SDL_RenderDrawLine(Game::getInstance()->getRenderer(),0,0,cursor.x,cursor.y);
+		SDL_SetRenderDrawColor(Game::getInstance()->getRenderer(),0,0,0,255);
+	}
 
 };
 

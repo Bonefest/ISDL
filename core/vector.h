@@ -18,6 +18,7 @@ struct Rect {
 		height = rect.h;
 	}
 	SDL_Rect toSDLRect() const { return (SDL_Rect){int(round(x)),int(round(y)),int(round(width)),int(round(height)) }; }
+	SDL_Point toSDLPoint() const { return (SDL_Point){int(round(x)),int(round(y))}; }
 };
 
 struct Polar {

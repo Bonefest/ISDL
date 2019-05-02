@@ -36,6 +36,7 @@ namespace MSDL {
 		private:
 			Object* object;
 			Rect speed;
+			Rect endPos;
 
 			double curTime;
 
@@ -45,6 +46,7 @@ namespace MSDL {
 
 			void update(double delta);
 			bool isFinished();
+			void finish();
 		};
 
 		//Действие поворота
@@ -52,6 +54,7 @@ namespace MSDL {
 		private:
 			Sprite* sprite;
 			double speed;
+			double endAngle;
 
 			double curTime;
 		public:
@@ -60,6 +63,7 @@ namespace MSDL {
 
 			void update(double delta);
 			bool isFinished();
+			void finish();
 		};
 
 		//Действие покраски в заданный цвет
@@ -67,6 +71,7 @@ namespace MSDL {
 		private:
 			Sprite* sprite;
 			Color speedColor;
+			Color endColor;
 
 			double curTime;
 		public:
@@ -75,6 +80,7 @@ namespace MSDL {
 
 			void update(double delta);
 			bool isFinished();
+			void finish();
 		};
 
 		//Действие вызова функтора
