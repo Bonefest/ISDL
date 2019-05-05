@@ -117,13 +117,11 @@ double Game::getDeltaTime() {
 
 void Game::startGame() {
 	exitStatus = false;
-//	Vector2 vect(100,100);
-
-//	Game::getInstance()->log(std::to_string(vect.getPosition().x));
 	while(!exitStatus) {
 		controller();
-		StateManager::getInstance()->update(getDeltaTime());
-		currentScene->update(getDeltaTime());
+		double delta = getDeltaTime();
+		StateManager::getInstance()->update(delta);
+		currentScene->update(delta);
 		draw();
 	}
 

@@ -3,50 +3,54 @@
 
 #include <SDL2/SDL.h>
 
-//Класс представляет анимацию,хранит необходимую информацию касательно её отображения
-//и отображает саму текстуру.
-class Animation {
-private:
-	SDL_Texture* texture;
-	
-	short begFrameX;	//Позиция начального кадра	
-	short begFrameY;
+namespace MSDL {
 
-	short endFrameX;	//Позиция конечного кадра
-	short endFrameY;
+	//Класс представляет анимацию,хранит необходимую информацию касательно её отображения
+	//и отображает саму текстуру.
+	class Animation {
+	private:
+		SDL_Texture* texture;
+		
+		short begFrameX;	//Позиция начального кадра	
+		short begFrameY;
 
-	short curFrameX;	//Позиция текущего кадра		
-	short curFrameY;
+		short endFrameX;	//Позиция конечного кадра
+		short endFrameY;
 
-	short frameWidth;	//Ширина кадра
-	short frameHeight;	//Высота кадра
-	float frameSpeed;	//Скорость смены кадра (в кадрах/c).0 - никогда не менять автоматически
-	
-	float curTime;		//Время,которое прошло от смены прошлого кадра
+		short curFrameX;	//Позиция текущего кадра		
+		short curFrameY;
 
-	bool loop;			//Повторяется ли анимация
-	bool finished;		//Завершена ли анимация
+		short frameWidth;	//Ширина кадра
+		short frameHeight;	//Высота кадра
+		float frameSpeed;	//Скорость смены кадра (в кадрах/c).0 - никогда не менять автоматически
+		
+		float curTime;		//Время,которое прошло от смены прошлого кадра
 
-	bool complicated;	//Усложнённая анимация - при достижении конца ряда - переходит на следующий,
-						//либо на начало
+		bool loop;			//Повторяется ли анимация
+		bool finished;		//Завершена ли анимация
 
-	int textureWidth;
-	int textureHeight;
+		bool complicated;	//Усложнённая анимация - при достижении конца ряда - переходит на следующий,
+							//либо на начало
 
-public:
-	Animation(SDL_Texture* texture=nullptr,short width=0,short height=0,short begX=0,short begY=0,float speed=0.0f,bool loop=true,bool complicated=false);
+		int textureWidth;
+		int textureHeight;
 
-	//Изменяет скорость смены кадров анимации
-	void setSpeed(float speed);
+	public:
+		Animation(SDL_Texture* texture=nullptr,short width=0,short height=0,short begX=0,short begY=0,float speed=0.0f,bool loop=true,bool complicated=false);
 
-	//Переходит на следующий кадр
-	void nextFrame();
+		//Изменяет скорость смены кадров анимации
+		void setSpeed(float speed);
 
-	//Обнуляет анимацию,переводя её состояние в начальное
-	void reset();
+		//Переходит на следующий кадр
+		void nextFrame();
 
-	void update(float delta);	//Обновляет анимацию
-	SDL_Rect getFrameSource();	//Возвращает расположение кадра на текстуре 
-};
+		//Обнуляет анимацию,переводя её состояние в начальное
+		void reset();
+
+		void update(float delta);	//Обновляет анимацию
+		SDL_Rect getFrameSource();	//Возвращает расположение кадра на текстуре 
+	};
+
+}
 
 #endif

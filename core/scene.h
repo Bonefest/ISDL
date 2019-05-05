@@ -12,68 +12,48 @@
 #include "sprite.h"
 #include "collision_manager.h"
 
-class Scene {
-private:
-	std::vector<Sprite*> 			sceneSprites;	//Объекты,которые находяться на сцене
-	std::map<std::string,Camera*> 	sceneCameras;	//Камеры,которые находяться на сцене.Хранится
-													//в виде Имя Камеры - Значение
-	
-	CollisionManager 			collisionManager;	//Менеджер для обработки коллизий
-public:
-	virtual ~Scene();	//НАДО РЕАЛИЗОВАТЬ УДАЛЕНИЕ(Сцена не должна удалять указатели самостоятельно)
+namespace MSDL {
 
-	//Обрабатывает события
-	virtual void controller(SDL_Event* event);
+	class Scene {
+	private:
+		std::vector<Sprite*>			UILayer;		//Список объектов пользовательского интерфейса
+		std::vector<Sprite*> 			sceneSprites;	//Объекты,которые находяться на сцене
+		std::map<std::string,Camera*> 	sceneCameras;	//Камеры,которые находяться на сцене.Хранится
+														//в виде Имя Камеры - Значение
+		
+		CollisionManager 			collisionManager;	//Менеджер для обработки коллизий
+	public:
+		virtual ~Scene();	//НАДО РЕАЛИЗОВАТЬ УДАЛЕНИЕ(Сцена не должна удалять указатели самостоятельно)
 
-	//Обновляет игровые данные
-	virtual void update(double delta);
+		//Обрабатывает события
+		virtual void controller(SDL_Event* event);
 
-	//Рисует на сцене игровые данные
-	virtual void draw();
+		//Обновляет игровые данные
+		virtual void update(double delta);
 
-	//Добавляет спрайт на сцену с прямым порядком отрисовки и в коллизионный менеджер
-	void addSprite(Sprite* sprite,long collisionLevel=CollisionManager::DEFAULT_LEVEL_COLLISION);
+		//Рисует на сцене игровые данные
+		virtual void draw();
 
-	//Добавляет спрайт на сцену с Z-порядком отрисовки и в коллизионный менеджер
-	void addSpriteWithZOrder(Sprite* sprite,long z_position=0,long collisionLevel=CollisionManager::DEFAULT_LEVEL_COLLISION);
+		//Добавляет спрайт на сцену с прямым порядком отрисовки и в коллизионный менеджер
+		void addSprite(Sprite* sprite,long collisionLevel=CollisionManager::DEFAULT_LEVEL_COLLISION);
 
+		//Добавляет спрайт на сцену с Z-порядком отрисовки и в коллизионный менеджер
+		void addSpriteWithZOrder(Sprite* sprite,long z_position=0,long collisionLevel=CollisionManager::DEFAULT_LEVEL_COLLISION);
 
-	//Добавляет камеру в словарь
-	void addCamera(std::string name,Camera* camera);
+		//Добавляет спрайт на слой пользовательского интерфейса
+		void addUIElement(Sprite* sprite);
 
-	//Удаляет камеру из словаря
-	void removeCamera(std::string name);
+		//Добавляет камеру в словарь
+		void addCamera(std::string name,Camera* camera);
 
-
-	//WARNING!
-	CollisionManager* getCollisionManager() { return &collisionManager; }
-
-};
-
+		//Удаляет камеру из словаря
+		void removeCamera(std::string name);
 
 
-/*
-//НИЖЕ ТЕСТ,МОЖНО УДАЛЯТЬ
-class TestScene : public Scene {
-private:
-	int direction;
-	Sprite* animatedSprite;
-	Sprite* subSpr;
-	Label label;
-	Animation animations[4];
-	float timer;
+		//WARNING!
+		CollisionManager* getCollisionManager() { return &collisionManager; }
 
-	Camera* camera;
+	};
 
-public:
-	TestScene();
-	~TestScene();
-
-	void controller(SDL_Event* event);
-	void update(double delta);
-	void draw();
-};
-*/
-
-
+}
 #endif

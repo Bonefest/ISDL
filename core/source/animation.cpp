@@ -1,5 +1,8 @@
 #include "../animation.h"
 
+
+using namespace MSDL;
+
 Animation::Animation(SDL_Texture* text,short w,short h,short begX,short begY,float speed,bool lp,bool cmpl):
 	texture(text),begFrameX(begX),begFrameY(begY),curFrameX(begX),curFrameY(begY),
 	frameWidth(w),frameHeight(h),frameSpeed(speed),loop(lp),finished(false),complicated(cmpl) {

@@ -2,81 +2,89 @@
 #define VECTOR_H_
 
 #include <SDL2/SDL.h>
+#include <cmath>
 
-struct Rect {
-	double x;
-	double y;
+namespace MSDL {
 
-	double width;
-	double height;
+	struct Rect {
+		double x;
+		double y;
 
-	//Rect(const SDL_Rect& rect):(SDL_Rect){(int)round(relativePosition.x),(int)round(relativePosition.y),(int)round(size.x),(int)round(size.y)};(round(rect.x)),y(round(rect.y)),width(round(rect.w)),height(round(rect.h)) { }
-	void setSDLRect(const SDL_Rect& rect) {
-		x = rect.x;
-		y = rect.y;
-		width = rect.w;
-		height = rect.h;
-	}
-	SDL_Rect toSDLRect() const { return (SDL_Rect){int(round(x)),int(round(y)),int(round(width)),int(round(height)) }; }
-	SDL_Point toSDLPoint() const { return (SDL_Point){int(round(x)),int(round(y))}; }
-};
+		double width;
+		double height;
 
-struct Polar {
-	double angle;
-	double distance;
-};
+		Rect(const SDL_Rect& rect):x(rect.x),y(rect.y),width(rect.w),height(rect.h) {}
+		Rect(double _x=0,double _y=0,double _width=0,double _height=0):x(_x),y(_y),width(_width),height(_height) {}
 
-//Представляет вектор в двумерном пространстве
-class Vector2 {
-private:
-	double posX;
-	double posY;
+		void setSDLRect(const SDL_Rect& rect) {
+			x = rect.x;
+			y = rect.y;
+			width = rect.w;
+			height = rect.h;
+		}
+		
+		double distanceTo(Rect rect) { return sqrt(pow(x-rect.x,2) + pow(y-rect.y,2) ); }
 
-	double ang;
-	double dist;
+		SDL_Rect toSDLRect() const { return (SDL_Rect){int(round(x)),int(round(y)),int(round(width)),int(round(height)) }; }
+		SDL_Point toSDLPoint() const { return (SDL_Point){int(round(x)),int(round(y))}; }
+	};
 
-	//Переводит координаты с прямоугольной системы координат в полярную
-	void calcToPolar();
+	struct Polar {
+		double angle;
+		double distance;
+	};
 
-	//Переводит координаты с полярной системы координат в прямоугольную
-	void calcToRect();
-public:
-	Vector2(double x=0.0,double y=0.0);
-	Vector2(Rect position);
-	Vector2(const Vector2& vector);
+	//Представляет вектор в двумерном пространстве
+	class Vector2 {
+	private:
+		double posX;
+		double posY;
 
-	Vector2& operator=(const Vector2& vec);
+		double ang;
+		double dist;
 
-	Vector2 operator+(const Vector2& rightOp) const;
-	friend Vector2& operator+=(Vector2& left,const Vector2& rightOp);
+		//Переводит координаты с прямоугольной системы координат в полярную
+		void calcToPolar();
 
-	Vector2 operator-(const Vector2& rightOp) const;
-	friend Vector2& operator-=(Vector2& left,const Vector2& rightOp);
+		//Переводит координаты с полярной системы координат в прямоугольную
+		void calcToRect();
+	public:
+		Vector2(double x=0.0,double y=0.0);
+		Vector2(Rect position);
+		Vector2(const Vector2& vector);
 
-	Vector2 operator*(double value) const;
+		Vector2& operator=(const Vector2& vec);
 
-	friend Vector2 operator*(double value,const Vector2& rightOp);
+		Vector2 operator+(const Vector2& rightOp) const;
+		friend Vector2& operator+=(Vector2& left,const Vector2& rightOp);
 
-	//Возвращает позицию в прямоугольной системе
-	Rect getPosition() const { return (Rect){posX,posY};}
+		Vector2 operator-(const Vector2& rightOp) const;
+		friend Vector2& operator-=(Vector2& left,const Vector2& rightOp);
 
-	double getX() const { return posX; }
-	double getY() const { return posY; }
+		Vector2 operator*(double value) const;
 
-	void setPosition(double x,double y) {
-		posX = x;
-		posY = y;
+		friend Vector2 operator*(double value,const Vector2& rightOp);
 
-		calcToPolar();
-	}
+		//Возвращает позицию в прямоугольной системе
+		Rect getPosition() const { return (Rect){posX,posY};}
 
-	void setPosition(Rect position) { 
-		setPosition(position.x,position.y);
-	}
+		double getX() const { return posX; }
+		double getY() const { return posY; }
 
-	//Возвращает позицию в полярной системе
-	Polar getPolarPosition() const { return (Polar){ang,dist};}
-};
+		void setPosition(double x,double y) {
+			posX = x;
+			posY = y;
 
+			calcToPolar();
+		}
 
+		void setPosition(Rect position) { 
+			setPosition(position.x,position.y);
+		}
+
+		//Возвращает позицию в полярной системе
+		Polar getPolarPosition() const { return (Polar){ang,dist};}
+	};
+
+}
 #endif

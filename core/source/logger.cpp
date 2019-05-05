@@ -3,6 +3,9 @@
 #include <sstream>
 #include <ctime>
 
+
+using namespace MSDL;
+
 Logger::Logger(const char* fileName,unsigned int bufferSize,bool _silent):bufSize(bufferSize),silent(_silent) {
 	outFileName = fileName;
 	

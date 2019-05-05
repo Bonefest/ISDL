@@ -9,15 +9,15 @@
 #define DEFAULT_HEIGHT 720
 
 int main(int argv, char** args) {
-	Game::getInstance()->initGame(DEFAULT_WIDTH,DEFAULT_HEIGHT,"Game",SDL_INIT_VIDEO,SDL_WINDOW_SHOWN);
+	MSDL::Game::getInstance()->initGame(DEFAULT_WIDTH,DEFAULT_HEIGHT,"Game",SDL_INIT_VIDEO,SDL_WINDOW_SHOWN);
 	myScene* scene = new myScene();
-	Game::getInstance()->switchScene(scene);
+	MSDL::Game::getInstance()->switchScene(scene);
 
-	if(Game::getInstance()->isInitialized()) {
-		Game::getInstance()->startGame();
+	if(MSDL::Game::getInstance()->isInitialized()) {
+		MSDL::Game::getInstance()->startGame();
 	}
 
-	Game::getInstance()->closeGame();
+	MSDL::Game::getInstance()->closeGame();
 
 	return 0;
 }

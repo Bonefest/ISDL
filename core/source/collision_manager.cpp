@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cmath>
 
+
+using namespace MSDL;
+
 void CollisionManager::addSprite(Sprite* sprite,long level) {
 	sprites[level].push_front(sprite);
 }

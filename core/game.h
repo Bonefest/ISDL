@@ -9,60 +9,63 @@
 #include "logger.h"
 #include "media_manager.h"
 
-class Game {
-private:
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-	Logger* logger;
+namespace MSDL {
 
-	std::string gameName; 	//Имя игры
+	class Game {
+	private:
+		SDL_Window* window;
+		SDL_Renderer* renderer;
+		Logger* logger;
 
-	Scene* currentScene; 	//Хранит текущую сцену
+		std::string gameName; 	//Имя игры
 
-	bool initialized;		//Хранит состояние инициализации
-	bool fullscreen;
-	bool exitStatus;
+		Scene* currentScene; 	//Хранит текущую сцену
 
-	SDL_Point screenSize;
+		bool initialized;		//Хранит состояние инициализации
+		bool fullscreen;
+		bool exitStatus;
 
-	Uint64 lastTime;		//Время последнего кадра
+		SDL_Point screenSize;
 
-	//Обрабатывает некоторые события и делегирует их текущей сцене
-	void controller();
+		Uint64 lastTime;		//Время последнего кадра
 
-	//Возвращает время,которое прошло от прошлого кадра
-	double getDeltaTime();
+		//Обрабатывает некоторые события и делегирует их текущей сцене
+		void controller();
 
-	Game() { }
-	Game(const Game&)=delete;
-	Game& operator=(const Game&)=delete;
+		//Возвращает время,которое прошло от прошлого кадра
+		double getDeltaTime();
 
-	void loadDefaultSettings();					//Загружает стандартные настройки
+		Game() { }
+		Game(const Game&)=delete;
+		Game& operator=(const Game&)=delete;
 
-public:
-	void initGame(int width,int height,std::string name, Uint32 flags,Uint32 windowFlags,Uint32 rendererFlags = SDL_RENDERER_ACCELERATED,bool fullscreen=false,const char* logFileName = "default.log");
+		void loadDefaultSettings();					//Загружает стандартные настройки
 
-	//Завершает игру,очищает память,сбрасывает логи,сохраняет информацию.
-	void closeGame();
+	public:
+		void initGame(int width,int height,std::string name, Uint32 flags,Uint32 windowFlags,Uint32 rendererFlags = SDL_RENDERER_ACCELERATED,bool fullscreen=false,const char* logFileName = "default.log");
 
-	static Game* getInstance();
+		//Завершает игру,очищает память,сбрасывает логи,сохраняет информацию.
+		void closeGame();
 
-	void startGame();	//Начинает игровой цикл
+		static Game* getInstance();
 
-	bool isFullscreen() const { return fullscreen; }
-	bool isInitialized() const { return initialized; }
+		void startGame();	//Начинает игровой цикл
 
-	void draw();
+		bool isFullscreen() const { return fullscreen; }
+		bool isInitialized() const { return initialized; }
 
-	void log(std::string message);
+		void draw();
 
-	void switchScene(Scene* scene) { currentScene = scene;}
+		void log(std::string message);
 
-	static MediaManager* getMediaManager() { return MediaManager::getInstance();}
+		void switchScene(Scene* scene) { currentScene = scene;}
 
-	SDL_Point getScreenSize() { return screenSize; }
+		static MediaManager* getMediaManager() { return MediaManager::getInstance();}
 
-	SDL_Renderer* getRenderer() { return renderer; }
-};
+		SDL_Point getScreenSize() { return screenSize; }
 
+		SDL_Renderer* getRenderer() { return renderer; }
+	};
+
+}
 #endif

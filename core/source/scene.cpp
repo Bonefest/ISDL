@@ -5,6 +5,8 @@
 #include <utility>
 
 
+using namespace MSDL;
+
 Scene::~Scene() {
 	for(unsigned int counter = sceneSprites.size()-1; counter >= 0; counter--){
 		Sprite *spr = sceneSprites[counter];
@@ -20,7 +22,9 @@ Scene::~Scene() {
 
 
 void Scene::controller(SDL_Event* event) {
-	
+	for(size_t counter = 0;counter < UILayer.size(); counter++)
+		UILayer[counter]->controller(event);
+
 	for(unsigned int counter = 0; counter < sceneSprites.size(); counter++){
 		sceneSprites[counter]->controller(event);
 	}
@@ -30,18 +34,31 @@ void Scene::draw() {
 	//Для каждой камеры рисуем все объекты
 	for(auto cameraIter=sceneCameras.begin();cameraIter!=sceneCameras.end();cameraIter++) {
 		if(cameraIter->second->isActive()) {
+			if(cameraIter->second->isActiveViewport()) {
+				SDL_Rect viewportRect = cameraIter->second->getViewport().toSDLRect();
+				SDL_RenderSetViewport(Game::getInstance()->getRenderer(),&viewportRect);
+			} else SDL_RenderSetViewport(Game::getInstance()->getRenderer(),NULL);
+
 			for(size_t counter=0;counter!=sceneSprites.size();counter++) {
 				sceneSprites[counter]->draw(Game::getInstance()->getRenderer(),cameraIter->second->getPosition(),cameraIter->second->getAngle());
-					
+				
 			}
 
 		}
 	}
 
+	//Рисуем объекты пользовательского интерфейса
+	for(size_t counter=0;counter!=UILayer.size();counter++) {
+		SDL_RenderSetViewport(Game::getInstance()->getRenderer(),NULL);
+		UILayer[counter]->draw(Game::getInstance()->getRenderer(),(Rect){0,0},0);
+	}
 }
 
 void Scene::update(double delta) {
 	collisionManager.calculate();	//Рассчитывает коллизии
+
+	for(size_t counter=0;counter<UILayer.size();counter++)
+		UILayer[counter]->update(delta);
 
 	for(auto cameraIter=sceneCameras.begin();cameraIter!=sceneCameras.end();cameraIter++) 
 		cameraIter->second->update(delta);
@@ -55,6 +72,12 @@ void Scene::addSprite(Sprite* sprite,long collisionLevel) {
 	sceneSprites.push_back(sprite);
 	collisionManager.addSprite(sprite,collisionLevel);
 }
+
+//Добавляет спрайт на слой пользовательского интерфейса
+void Scene::addUIElement(Sprite* sprite) {
+	UILayer.push_back(sprite);
+}
+
 
 //Добавляет камеру в словарь,где ключ - это фактически её название.	
 void Scene::addCamera(std::string name,Camera* camera) {

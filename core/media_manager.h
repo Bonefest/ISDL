@@ -9,75 +9,78 @@
 #include <map>
 #include <string>
 
-SDL_Texture* loadTextureFromFile(const std::string& path);
+namespace MSDL {
 
-//Структура,которая хранит расположение фрагмента текстуры.Необходимо для представления
-//изображений на огромных текстурах(атласах).
+	SDL_Texture* loadTextureFromFile(const std::string& path);
 
-//Запланированное применение : имя конкретного куска атласа.Возможность зная имя изображения
-//получить текстуру и позицию на текстуре
-struct Image {
-	SDL_Rect source;
-	SDL_Texture* texture;
-};
+	//Структура,которая хранит расположение фрагмента текстуры.Необходимо для представления
+	//изображений на огромных текстурах(атласах).
 
-class MediaManager {
-private:
-	//Словарь загруженных текстур,где ключ - путь к текстуре
-	std::map<std::string,SDL_Texture*> loadedTextures;	
+	//Запланированное применение : имя конкретного куска атласа.Возможность зная имя изображения
+	//получить текстуру и позицию на текстуре
+	struct Image {
+		SDL_Rect source;
+		SDL_Texture* texture;
+	};
 
-	//Словарь загруженных изображений,где ключ - имя изображения
-	std::map<std::string,Image> loadedImages;
+	class MediaManager {
+	private:
+		//Словарь загруженных текстур,где ключ - путь к текстуре
+		std::map<std::string,SDL_Texture*> loadedTextures;	
 
-	//Словарь загруженных анимаций,где ключ - название анимации
-	std::map<std::string,Animation> loadedAnimations;
+		//Словарь загруженных изображений,где ключ - имя изображения
+		std::map<std::string,Image> loadedImages;
 
-	//Словарь загруженных шрифтов,где ключ - имя шрифта
-	std::map<std::string,TTF_Font*> loadedFonts;
+		//Словарь загруженных анимаций,где ключ - название анимации
+		std::map<std::string,Animation> loadedAnimations;
 
-	MediaManager() {}
-	MediaManager(const MediaManager& )=delete;
-	MediaManager& operator=(const MediaManager& )=delete;
-public:
-	static MediaManager* getInstance();
+		//Словарь загруженных шрифтов,где ключ - имя шрифта
+		std::map<std::string,TTF_Font*> loadedFonts;
 
-	//Загружает текстуру и добавляет её в словарь загруженных текстур,если
-	//текстура уже загружена,просто возвращает указатель
-	SDL_Texture* loadTexture(const std::string& path);
+		MediaManager() {}
+		MediaManager(const MediaManager& )=delete;
+		MediaManager& operator=(const MediaManager& )=delete;
+	public:
+		static MediaManager* getInstance();
 
-	//Загружает текстуру (если ещё не загружена) и добавляет в словарь загруженных
-	//изображений,если изображение уже загружено - просто возвращает структуру
-	Image loadImage(const std::string& path,const std::string& imageName,SDL_Rect source);
+		//Загружает текстуру и добавляет её в словарь загруженных текстур,если
+		//текстура уже загружена,просто возвращает указатель
+		SDL_Texture* loadTexture(const std::string& path);
 
-	//Загружает анимацию и добавляет в словарь загруженных анимаций.Если такая анимация уже существует -
-	//возвращает её копию.
-	Animation loadAnimation(const std::string& path,const std::string& animationName,SDL_Rect source,
-		float speed=0.0,bool loop=true,bool complicated=false);
+		//Загружает текстуру (если ещё не загружена) и добавляет в словарь загруженных
+		//изображений,если изображение уже загружено - просто возвращает структуру
+		Image loadImage(const std::string& path,const std::string& imageName,SDL_Rect source);
 
-	//Возвращает ранее загруженную анимацию.В случае отсутствия - анимация с нулевой текстурой
-	Animation getAnimation(const std::string& animationName);
-	/*//Сохраняет переданную анимацию под заданным именем в словаре
-	Animation loadAnimation(const Animation& animation,const std::string& animationName);*/
+		//Загружает анимацию и добавляет в словарь загруженных анимаций.Если такая анимация уже существует -
+		//возвращает её копию.
+		Animation loadAnimation(const std::string& path,const std::string& animationName,SDL_Rect source,
+			float speed=0.0,bool loop=true,bool complicated=false);
 
-	//Возвращает ранее загруженное изображение.В случае,если изображение ещё не загружено -
-	//возвращает структуру с нулевой текстурой.
-	Image getImage(const std::string& imageName);
+		//Возвращает ранее загруженную анимацию.В случае отсутствия - анимация с нулевой текстурой
+		Animation getAnimation(const std::string& animationName);
+		/*//Сохраняет переданную анимацию под заданным именем в словаре
+		Animation loadAnimation(const Animation& animation,const std::string& animationName);*/
 
-	//Возвращает загружено ли изображение в данный момент.
-	bool isImageLoaded(const std::string& imageName);
+		//Возвращает ранее загруженное изображение.В случае,если изображение ещё не загружено -
+		//возвращает структуру с нулевой текстурой.
+		Image getImage(const std::string& imageName);
 
-	//Загружает шрифт и добавляет его в словарь загруженных шрифтов,если шрифт уже добавлен -
-	//просто возвращает указатель
-	TTF_Font* loadFont(const std::string& path,int ptsize);
+		//Возвращает загружено ли изображение в данный момент.
+		bool isImageLoaded(const std::string& imageName);
 
-	//Получает на вход json файл, который содержит метаданные (информация про изображения на атласе)
-	//автоматически добавляет различные изображения в словарь
-	void scanJsonFile(const std::string& path);
+		//Загружает шрифт и добавляет его в словарь загруженных шрифтов,если шрифт уже добавлен -
+		//просто возвращает указатель
+		TTF_Font* loadFont(const std::string& path,int ptsize);
 
-	//Удаляет все текстуры и завершает работу синглтона
-	void close();
+		//Получает на вход json файл, который содержит метаданные (информация про изображения на атласе)
+		//автоматически добавляет различные изображения в словарь
+		void scanJsonFile(const std::string& path);
 
-};
+		//Удаляет все текстуры и завершает работу синглтона
+		void close();
 
+	};
+
+}
 
 #endif

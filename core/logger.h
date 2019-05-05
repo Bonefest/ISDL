@@ -4,32 +4,35 @@
 #include <fstream>
 #include <string>
 
-//Класс,который предоставляет интерфейс для простого логирования
-class Logger {
-private:
-	std::ofstream outFile; 	//Файл вывода
+namespace MSDL {
 
-	std::string buffer;		//Буфер,который хранит временную строку
-							//Обеспечивает вывод в файл только при достижении некоторого лимита
+	//Класс,который предоставляет интерфейс для простого логирования
+	class Logger {
+	private:
+		std::ofstream outFile; 	//Файл вывода
 
-	std::string outFileName;
+		std::string buffer;		//Буфер,который хранит временную строку
+								//Обеспечивает вывод в файл только при достижении некоторого лимита
 
-	unsigned int bufSize;
+		std::string outFileName;
 
-	bool loaded;			//Хранит состояние загрузки файла вывода
+		unsigned int bufSize;
 
-	bool silent;			//Определяет тихий режим,при котором все неудачи при попытке в
-							//обращении к логеру не будут оповещаться
+		bool loaded;			//Хранит состояние загрузки файла вывода
 
-public:
-	explicit Logger(const char* fileName = "default_log.log",unsigned int bufferSize = 1024,bool silent=false);
-	~Logger();
+		bool silent;			//Определяет тихий режим,при котором все неудачи при попытке в
+								//обращении к логеру не будут оповещаться
 
-	//Добавляет строку сообщения в конец файла
-	void log(std::string message);
+	public:
+		explicit Logger(const char* fileName = "default_log.log",unsigned int bufferSize = 1024,bool silent=false);
+		~Logger();
 
-	//Сбрасывает буфер в файл
-	void flush();
-};
+		//Добавляет строку сообщения в конец файла
+		void log(std::string message);
 
+		//Сбрасывает буфер в файл
+		void flush();
+	};
+
+}
 #endif

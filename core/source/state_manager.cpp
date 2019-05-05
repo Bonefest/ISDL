@@ -3,6 +3,7 @@
 using namespace MSDL;
 using namespace MSDL::StandardActions;
 
+#include <iostream>
 MoveTo::MoveTo(Object* obj, Rect position, double duration, v_callback finishCallback ):Action(duration,finishCallback),object(obj),endPos(position),curTime(0) {
 	if(duration <= 0) duration = 1;
 

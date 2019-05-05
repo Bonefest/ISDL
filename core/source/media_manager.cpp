@@ -3,9 +3,12 @@
 #include "../game.h"
 #include "../json.hpp"
 
+
+using namespace MSDL;
+
 using Json=nlohmann::json;
 
-SDL_Texture* loadTextureFromFile(const std::string& path) {
+SDL_Texture* MSDL::loadTextureFromFile(const std::string& path) {
 	SDL_Surface* image = IMG_Load(path.c_str());
 	if(!image) {
 		Game::getInstance()->log("Can't load image '" + path + "' : " + IMG_GetError());
