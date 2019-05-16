@@ -3,16 +3,21 @@
 #include "../sprite.h"
 #include "../game.h"
 
-Sprite::Sprite():texture(nullptr),image{},absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
+Sprite::Sprite():texture(nullptr),image{},absolutePosition{0,0},relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { 
+	physics = NULL;
+}
 
 Sprite::Sprite(SDL_Texture* tex,Rect apos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
 texture(tex),image{},absolutePosition(apos),relativePosition{0,0},size(sz),anchor{int(0.5*sz.x),int(0.5*sz.y)},angle(angl),pinned(pnd),alreadyHovered(false),pressed(false),dragged(false),flip(type),
-currentAnimation(nullptr),animationStopped(false) { }
+currentAnimation(nullptr),animationStopped(false) { 
+	physics = NULL;
+}
 
 Sprite::Sprite(Image img,Rect apos,double angl,SDL_RendererFlip type,bool pnd):
 texture(nullptr),image(img),absolutePosition(apos),relativePosition{0,0},anchor{int(0.5*image.source.w),int(0.5*image.source.h)},angle(angl),pinned(pnd),alreadyHovered(false),dragged(false),flip(type),
 currentAnimation(nullptr),animationStopped(false) { 
 	size.setSDLRect(image.source);
+	physics = NULL;
 }
 
 void Sprite::addPosition(double x,double y) {
@@ -23,7 +28,9 @@ void Sprite::addPosition(double x,double y) {
 	absolutePosition.y += y;
 }
 
-void Sprite::addPosition(Vector2 xy) : Sprite::addPosition(xy.getX(), xy.getY()){ };
+void Sprite::addPosition(Vector2 xy){
+	addPosition(xy.getX(), xy.getY());
+}
 
 void Sprite::setPosition(double x,double y) {
 	
@@ -117,6 +124,10 @@ void Sprite::update(double delta) {
 	//Обновляем всех детей
 	for(auto childIter = children.begin();childIter != children.end();childIter++)
 		(*childIter)->update(delta);
+
+	//Обновляем физику
+	if(this->physics != NULL)
+		this->physics->update(delta);
 }
 
 void Sprite::controller(SDL_Event* event){
@@ -216,6 +227,8 @@ bool Sprite::isAnimate() const{
 bool Sprite::isPinned() const { return pinned; }
 
 void Sprite::setPinned(bool value) { pinned = value; }
+
+
 
 Label::Label(TTF_Font* _font):Sprite(),currentTexture(nullptr),font(_font),lastColor{255,255,255} {}
 

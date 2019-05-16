@@ -5,11 +5,9 @@
 using namespace std;
 
 int main(){
-	Vector2 v1(-4, 3), v2(-2, 4);
-	cout << v1.getX() << endl << v1.getY() << endl;
-	cout << v2.getX() << endl << v2.getY() << endl << endl;
-	Vector2 v3 = v2.normal();
-	cout << v3.getX() << endl << v3.getY() << endl << endl;
-	cout << v3.len() << endl;
+	Vector2 v1(0, -3);
+	cout << v1.isNull() << endl;
+	Vector2 v2(0, 0);
+	cout << v2.isNull() << endl;
 	return 0;
 }

@@ -52,6 +52,7 @@ public:
 	Vector2 operator-(const Vector2 &rightOp) const;
 	Vector2 operator-() const;
 	Vector2& operator-=(const Vector2 &rightOp);
+	Vector2& operator*=(const double value);
 	Vector2 operator/(double value) const;
 
 	Vector2 operator*(double value) const;
@@ -65,6 +66,9 @@ public:
 
 	double getX() const { return posX; }
 	double getY() const { return posY; }
+
+	void setX(double x) { posX = x; }
+	void setY(double y) { posY = y; }
 
 	void setPosition(double x,double y) {
 		posX = x;
@@ -89,6 +93,8 @@ public:
 
 	//Возвращает позицию в полярной системе
 	Polar getPolarPosition() const { return (Polar){ang,dist};}
+
+	bool isNull() { return !(posX || posY); }
 };
 
 

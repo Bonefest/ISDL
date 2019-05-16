@@ -11,6 +11,8 @@
 #include "media_manager.h"
 #include "physics.h"
 
+class Physics;
+
 //Реализует логику базового графического объекта 
 class Sprite {
 private:
@@ -106,6 +108,9 @@ public:
 	bool isPinned() const;										//Прикреплен ли к экрану
 	void setPinned(bool value);
 
+
+	//физика
+	Physics *physics;
 };
 
 

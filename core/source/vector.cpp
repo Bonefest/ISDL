@@ -63,6 +63,13 @@ Vector2& Vector2::operator-=(const Vector2& rightOp) {
 	return *this;
 }
 
+Vector2& Vector2::operator*=(const double value){
+	posX *= value;
+	posY *= value;
+
+	return *this;
+}
+
 Vector2 Vector2::operator-(const Vector2& rightOp) const {
 	return Vector2(posX - rightOp.posX,posY - rightOp.posY);
 }
@@ -79,7 +86,7 @@ Vector2 operator*(double value,const Vector2& rightOp) {
 	return rightOp*value;
 }
 
-Vector2 operator/(double value){
+Vector2 Vector2::operator/(double value) const{
 	return Vector2(posX/value, posY/value);
 }
 
@@ -96,11 +103,13 @@ double Vector2::sqrlen(){
 }
 
 Vector2 Vector2::normal(){
+	if(this->len() == 0)
+		return Vector2();
 	return Vector2(posX / this->len(), posY / this->len());
 }
 
 Vector2 Vector2::up(){
-	return Vector2(0, 1);
+	return Vector2(0, -1);
 }
 
 Vector2 Vector2::right(){
