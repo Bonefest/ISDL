@@ -25,6 +25,8 @@ void Sprite::addPosition(double x,double y) {
 	Object::addPosition(x,y);
 }
 
+void Sprite::addPosition(Vector2 xy) : Sprite::addPosition(xy.getX(), xy.getY()){ };
+
 void Sprite::setPosition(double x,double y) {
 	Rect absolutePosition = getPosition();
 

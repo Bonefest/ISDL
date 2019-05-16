@@ -6,10 +6,10 @@ CFLAGS=-Wall
 H_PATH=core
 SOURCE_PATH=$(H_PATH)/source
 
-_SFILES=main.cpp game.cpp vector.cpp animation.cpp camera.cpp logger.cpp sprite.cpp scene.cpp media_manager.cpp collision_manager.cpp input_manager.cpp state_manager.cpp
+_SFILES=main.cpp game.cpp vector.cpp animation.cpp camera.cpp logger.cpp sprite.cpp scene.cpp media_manager.cpp collision_manager.cpp input_manager.cpp state_manager.cpp physics.cpp
 SFILES=$(patsubst %,$(SOURCE_PATH)/%,$(_SFILES))
 
-_HFILES=main.h vector.h animation.h sprite.h logger.h scene.h camera.h media_manager.h collision_manager.h input_manager.h state_manager.h
+_HFILES=main.h vector.h animation.h sprite.h logger.h scene.h camera.h media_manager.h collision_manager.h input_manager.h state_manager.h physics.h
 HFILES=$(patsubst %,$(H_PATH)/%,$(_HFILES))
 
 %.o: %.cpp %(HFILES) $(CC) -c -o $@ $< $(CLFAGS)
