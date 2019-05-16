@@ -82,10 +82,13 @@ Vector2 Vector2::operator*(double value) const {
 	return Vector2(posX*value,posY*value);
 }
 
-Vector2 operator*(double value,const Vector2& rightOp) {
-	return rightOp*value;
-}
+namespace MSDL {
 
+	Vector2 operator*(double value,const Vector2& rightOp) {
+		return rightOp*value;
+	}
+
+}
 Vector2 Vector2::operator/(double value) const{
 	return Vector2(posX/value, posY/value);
 }

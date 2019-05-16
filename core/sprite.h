@@ -13,6 +13,7 @@
 #include "physics.h"
 
 namespace MSDL {
+	class Physics;
 
 	//Структура для определения цвета (Для более точного и плавного цвета, в отличии от SDL_Color)
 	struct Color {

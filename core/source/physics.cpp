@@ -148,8 +148,8 @@ void Physics::onPhysicsCollision(Sprite* sprite){
 
 	std::cout << "Collision\n";
 
-	Vector2 thisDot(object->getAbsolutePosition());
-	Vector2 thatDot(that->getAbsolutePosition());
+	Vector2 thisDot(object->getPosition());
+	Vector2 thatDot(that->getPosition());
 	thatDot += Vector2(that->getSize());
 	if(thatDot.getX() >= thisDot.getX()-2 && thatDot.getX() <= thisDot.getX()+2){ //Left
 		mySide[left] = true;

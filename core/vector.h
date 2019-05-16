@@ -104,6 +104,6 @@ namespace MSDL {
 		Polar getPolarPosition() const { return (Polar){ang,dist};}
 
 		bool isNull() { return !(posX || posY); }
-	}
+	};
 }
 #endif
