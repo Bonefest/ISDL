@@ -11,6 +11,10 @@ void CollisionManager::addSprite(Sprite* sprite,long level) {
 	sprites[level].push_front(sprite);
 }
 
+void CollisionManager::removeSprite(Sprite* sprite,long level) {
+	sprites[level].remove(sprite);
+}
+
 void CollisionManager::simpleCollisionAlgorithm() {
 	for(auto levelIterPair=sprites.begin();levelIterPair!=sprites.end();levelIterPair++) {	//Проходим по всем уровням коллизий
 

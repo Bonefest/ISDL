@@ -8,7 +8,10 @@
 using namespace MSDL;
 
 Scene::~Scene() {
-	for(unsigned int counter = sceneSprites.size()-1; counter >= 0; counter--){
+	/*for(auto spriteIter = sceneSprites.begin();spriteIter!=sceneSprites.end();spriteIter++) {
+
+	}*/
+	/*for(unsigned int counter = sceneSprites.size()-1; counter >= 0; counter--){
 		Sprite *spr = sceneSprites[counter];
 		delete spr;
 	}
@@ -17,16 +20,16 @@ Scene::~Scene() {
 		Camera *cam = cameraIter->second;
 		delete cam;
 	}
-	sceneCameras.clear();
+	sceneCameras.clear();*/
 }
 
 
 void Scene::controller(SDL_Event* event) {
-	for(size_t counter = 0;counter < UILayer.size(); counter++)
-		UILayer[counter]->controller(event);
+	for(auto uiIter = UILayer.begin();uiIter != UILayer.end();uiIter++)
+		(*uiIter)->controller(event);
 
-	for(unsigned int counter = 0; counter < sceneSprites.size(); counter++){
-		sceneSprites[counter]->controller(event);
+	for(auto spriteIter = sceneSprites.begin();spriteIter!=sceneSprites.end();spriteIter++) {
+		(*spriteIter)->controller(event);
 	}
 }
 
@@ -39,38 +42,41 @@ void Scene::draw() {
 				SDL_RenderSetViewport(Game::getInstance()->getRenderer(),&viewportRect);
 			} else SDL_RenderSetViewport(Game::getInstance()->getRenderer(),NULL);
 
-			for(size_t counter=0;counter!=sceneSprites.size();counter++) {
-				sceneSprites[counter]->draw(Game::getInstance()->getRenderer(),cameraIter->second->getPosition(),cameraIter->second->getAngle());
-				
-			}
+			for(auto spriteIter = sceneSprites.begin();spriteIter!=sceneSprites.end();spriteIter++)
+				(*spriteIter)->draw(Game::getInstance()->getRenderer(),cameraIter->second->getPosition(),cameraIter->second->getAngle());
 
 		}
 	}
 
 	//Рисуем объекты пользовательского интерфейса
-	for(size_t counter=0;counter!=UILayer.size();counter++) {
+	for(auto uiIter = UILayer.begin();uiIter != UILayer.end();uiIter++) {
 		SDL_RenderSetViewport(Game::getInstance()->getRenderer(),NULL);
-		UILayer[counter]->draw(Game::getInstance()->getRenderer(),(Rect){0,0},0);
+		(*uiIter)->draw(Game::getInstance()->getRenderer(),(Rect){0,0},0);
 	}
 }
 
 void Scene::update(double delta) {
 	collisionManager.calculate();	//Рассчитывает коллизии
 
-	for(size_t counter=0;counter<UILayer.size();counter++)
-		UILayer[counter]->update(delta);
+	for(auto uiIter = UILayer.begin();uiIter != UILayer.end();uiIter++)
+		(*uiIter)->update(delta);
 
 	for(auto cameraIter=sceneCameras.begin();cameraIter!=sceneCameras.end();cameraIter++) 
 		cameraIter->second->update(delta);
 
-	for(unsigned int counter = 0;counter<sceneSprites.size();counter++)
-		sceneSprites[counter]->update(delta);
+	for(auto spriteIter = sceneSprites.begin();spriteIter!=sceneSprites.end();spriteIter++)
+		(*spriteIter)->update(delta);
 }
 
 //Добавляет спрайт на сцену(фактически в очередь)
 void Scene::addSprite(Sprite* sprite,long collisionLevel) {
 	sceneSprites.push_back(sprite);
 	collisionManager.addSprite(sprite,collisionLevel);
+}
+
+void Scene::removeSprite(Sprite* sprite,long collisionLevel) {
+	sceneSprites.remove(sprite);
+	collisionManager.removeSprite(sprite,collisionLevel);
 }
 
 //Добавляет спрайт на слой пользовательского интерфейса
