@@ -193,6 +193,7 @@ namespace MSDL {
 		bool isPinned() const;										//Прикреплен ли к экрану
 		void setPinned(bool value);
 
+		Physics* physics;
 	};
 
 

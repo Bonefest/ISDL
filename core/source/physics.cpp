@@ -146,8 +146,6 @@ void Physics::onPhysicsCollision(Sprite* sprite){
 	isCollision = true;
 	that = sprite;
 
-	std::cout << "Collision\n";
-
 	Vector2 thisDot(object->getPosition());
 	Vector2 thatDot(that->getPosition());
 	thatDot += Vector2(that->getSize());

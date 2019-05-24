@@ -1,6 +1,7 @@
 #include "../core/sprite.h"
 #include "../core/game.h"
 #include "../core/physics.h"
+#include "../core/input_manager.h"
 #include <iostream>
 
 using namespace MSDL;
@@ -12,16 +13,16 @@ public:
 		Sprite::controller(event);
 		if(event->type == SDL_KEYDOWN) {
 
-			if(Game::getInstance()->isPressed(SDLK_a)) {
+			if(InputManager::getInstance()->isKeyPressed(SDLK_a)) {
 				physics->addForce(-Vector2::right() * speed);
 			}
-			if(Game::getInstance()->isPressed(SDLK_d)) {
+			if(InputManager::getInstance()->isKeyPressed(SDLK_d)) {
 				physics->addForce(Vector2::right() * speed);
 			}
-			if(Game::getInstance()->isPressed(SDLK_s)) {
+			if(InputManager::getInstance()->isKeyPressed(SDLK_s)) {
 				physics->addForce(-Vector2::up() * speed);
 			}
-			if(Game::getInstance()->isPressed(SDLK_w)) {
+			if(InputManager::getInstance()->isKeyPressed(SDLK_w)) {
 				physics->addForce(Vector2::up() * speed);
 			}
 		}

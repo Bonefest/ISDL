@@ -37,6 +37,10 @@ void CollisionManager::simpleCollisionAlgorithm() {
 				if(SDL_HasIntersection(&oneSDLPos,&twoSDLPos)) {
 					(*objOneIter)->onCollision(*objTwoIter);
 					(*objTwoIter)->onCollision(*objOneIter);
+					if((*objOneIter)->physics != NULL)
+						(*objOneIter)->physics->onPhysicsCollision(*objTwoIter);
+					if((*objTwoIter)->physics != NULL)
+						(*objTwoIter)->physics->onPhysicsCollision(*objOneIter);
 				}
 
 			}

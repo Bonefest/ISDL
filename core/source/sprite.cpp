@@ -6,15 +6,15 @@
 
 using namespace MSDL;
 
-Sprite::Sprite():Object(Rect()),texture(nullptr),image{},spriteColor(255,255,255,255),relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false) { }
+Sprite::Sprite():Object(Rect()),texture(nullptr),image{},spriteColor(255,255,255,255),relativePosition{0,0},angle(0),pinned(false),alreadyHovered(false),pressed(false),dragged(false),flip(SDL_FLIP_NONE),currentAnimation(nullptr),animationStopped(false),physics(nullptr) { }
 
 Sprite::Sprite(SDL_Texture* tex,Rect pos,Rect sz,double angl,SDL_RendererFlip type,bool pnd):
 Object(pos),texture(tex),image{},spriteColor(255,255,255,255),relativePosition{0,0},size(sz),angle(angl),pinned(pnd),alreadyHovered(false),pressed(false),dragged(false),flip(type),
-currentAnimation(nullptr),animationStopped(false) { }
+currentAnimation(nullptr),animationStopped(false),physics(nullptr) { }
 
 Sprite::Sprite(Image img,Rect pos,double angl,SDL_RendererFlip type,bool pnd):
 Object(pos),texture(nullptr),image(img),spriteColor(255,255,255,255),relativePosition{0,0},angle(angl),pinned(pnd),alreadyHovered(false),dragged(false),flip(type),
-currentAnimation(nullptr),animationStopped(false) { 
+currentAnimation(nullptr),animationStopped(false),physics(nullptr) { 
 	size.setSDLRect(image.source);
 }
 
@@ -134,6 +134,9 @@ void Sprite::update(double delta) {
 	//Обновляем всех детей
 	for(auto childIter = children.begin();childIter != children.end();childIter++)
 		(*childIter)->update(delta);
+
+	if(this->physics != nullptr)
+		this->physics->update(delta);
 }
 
 void Sprite::controller(SDL_Event* event){
