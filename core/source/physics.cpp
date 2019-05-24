@@ -130,7 +130,7 @@ void Physics::update(double delta){
 	}
 
 	
-	object->addPosition(speed);
+	object->addPosition(speed*delta);
 
 }
 

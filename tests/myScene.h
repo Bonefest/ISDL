@@ -49,7 +49,6 @@ public:
 
 	void update(double delta) {
 		Scene::update(delta);
-		std::cout << symbols.size() << std::endl;
 		for(auto symIter = symbols.begin();symIter != symbols.end();) {
 			if((*symIter)->getPosition().y > SCREEN_HEIGHT + SCREEN_HEIGHT/15) {
 				removeSprite(*symIter);
